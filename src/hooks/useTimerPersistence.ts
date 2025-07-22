@@ -31,12 +31,15 @@ export function useTimerPersistence() {
       if (session.timerState === 'working' || session.timerState === 'break') {
         const now = Date.now();
         const elapsed = Math.floor((now - (session.startedAt || now)) / 1000);
-        session.timeLeft = Math.max(0, session.timeLeft - elapsed);
+        const adjustedTimeLeft = Math.max(0, session.timeLeft - elapsed);
 
         // If time ran out while away, mark as completed
-        if (session.timeLeft === 0) {
+        if (adjustedTimeLeft === 0) {
           return null; // Let the timer start fresh
         }
+
+        // Return the adjusted time
+        session.timeLeft = adjustedTimeLeft;
       }
 
       return session;
