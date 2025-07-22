@@ -52,7 +52,7 @@ export function CategoryRow({
   };
 
   return (
-    <div className="bg-card/50 backdrop-blur rounded-xl p-3 md:p-4 hover:bg-card/70 transition-all duration-200">
+    <div className="bg-card backdrop-blur rounded-xl p-3 md:p-4 hover:bg-card transition-all duration-200">
       <div className="flex items-center justify-between mb-2">
         {isEditing ? (
           editForm

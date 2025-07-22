@@ -13,7 +13,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
   return (
     <button
       onClick={toggleView}
-      className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors duration-200"
+      className="p-2 rounded-lg bg-card hover:bg-card/70 transition-all duration-200 cursor-pointer"
       aria-label={`Switch to ${view === 'month' ? 'week' : 'month'} view`}
     >
       {view === 'month' ? (
@@ -23,7 +23,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-5 h-5"
+          className="w-5 h-5 text-primary"
         >
           <path
             strokeLinecap="round"
@@ -38,7 +38,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-5 h-5"
+          className="w-5 h-5 text-primary"
         >
           <path
             strokeLinecap="round"
