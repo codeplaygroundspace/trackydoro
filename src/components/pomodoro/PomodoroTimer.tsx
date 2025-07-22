@@ -27,11 +27,15 @@ export function PomodoroTimer({
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const startAudioRef = useRef<HTMLAudioElement | null>(null);
+  const resetAudioRef = useRef<HTMLAudioElement | null>(null);
   const { saveSession, loadSession, clearSession } = useTimerPersistence();
 
   // Initialize audio and load saved session
   useEffect(() => {
     audioRef.current = new Audio('/sounds/sound-run-time.wav');
+    startAudioRef.current = new Audio('/sounds/pomo-start.wav');
+    resetAudioRef.current = new Audio('/sounds/UI_reset.wav');
 
     // Load saved timer session
     const savedSession = loadSession();
@@ -51,7 +55,12 @@ export function PomodoroTimer({
   }, [categories, loadSession, onCategoryChange]);
 
   const handleTimerComplete = useCallback(() => {
-    audioRef.current?.play();
+    // Play sound with error handling
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error('Error playing timer completion sound:', error);
+      });
+    }
     clearSession(); // Clear saved session when timer completes
 
     if (timerState === 'working') {
@@ -74,7 +83,10 @@ export function PomodoroTimer({
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            handleTimerComplete();
+            // Timer has completed, trigger completion in next tick to ensure audio plays
+            setTimeout(() => {
+              handleTimerComplete();
+            }, 0);
             return 0;
           }
           const newTimeLeft = prev - 1;
@@ -115,10 +127,21 @@ export function PomodoroTimer({
         clearInterval(intervalRef.current);
       }
     };
-  }, [timerState, handleTimerComplete, selectedCategory, pomodoroCount, saveSession, clearSession, sessionType]);
+  }, [
+    timerState,
+    handleTimerComplete,
+    selectedCategory,
+    pomodoroCount,
+    saveSession,
+    clearSession,
+    sessionType,
+  ]);
 
   const startTimer = () => {
     if (!selectedCategory) return;
+    startAudioRef.current?.play().catch((error) => {
+      console.error('Error playing start sound:', error);
+    });
     setTimerState('working');
     setSessionType('work');
   };
@@ -136,10 +159,16 @@ export function PomodoroTimer({
   };
 
   const resumeTimer = () => {
+    startAudioRef.current?.play().catch((error) => {
+      console.error('Error playing start sound:', error);
+    });
     setTimerState(sessionType === 'work' ? 'working' : 'break');
   };
 
   const resetTimer = () => {
+    resetAudioRef.current?.play().catch((error) => {
+      console.error('Error playing reset sound:', error);
+    });
     setTimerState('idle');
     setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
     setSessionType('work');

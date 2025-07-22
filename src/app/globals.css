@@ -7,12 +7,13 @@
   --yellow-400: oklch(94.5% 0.129 101.54); /* accent */
   --yellow-50: oklch(98.7% 0.026 102.212); /* text light */
   --sky-200: oklch(74.354% 0.06808 232.444); /* text darker */
-  --sky-300: oklch(48.408% 0.10292 257.416); /* borders */
-  --sky-700: oklch(0.48 0.11 255.25); /* day background */
-  --sky-900: oklch(0.4 0.08 256.94); /* card background  */
+  --sky-300: oklch(41.04% 0.08349 256.73); /* borders */
+  --sky-700: oklch(40.046% 0.09336 256.266); /* day background */
+  --sky-900: oklch(32.635% 0.06474 256.129); /* card background  */
   --sky-950: oklch(0.28 0.05 257.59); /* main background */
 
-  --red-500: oklch(63.22% 0.24 29.55); /* destructive */
+  --red-500: oklch(57% 0.225 27); /* destructive for light theme */
+  --red-800: oklch(0.47 0.15 28.25); /* destructive for dark theme */
 
   /* Tailwind Slate Scale (for light theme) */
   --slate-50: oklch(98.44% 0.004 247.86);
@@ -82,7 +83,7 @@
   --accent: var(--sky-700);
   --accent-foreground: var(--yellow-50);
 
-  --destructive: var(--red-500);
+  --destructive: var(--red-800);
   --destructive-foreground: var(--yellow-50);
 
   --border: var(--sky-300);
@@ -113,7 +114,7 @@
     --accent: var(--sky-700);
     --accent-foreground: var(--yellow-50);
 
-    --destructive: var(--red-500);
+    --destructive: var(--red-800);
     --destructive-foreground: var(--yellow-50);
 
     --border: var(--sky-300);
