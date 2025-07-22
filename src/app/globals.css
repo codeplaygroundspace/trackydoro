@@ -24,38 +24,37 @@
 
   /* Tailwind Blue Scale (for primary) */
   --blue-500: oklch(60.16% 0.24 265.52);
-  /* --blue-600: oklch(54.16% 0.265 262.73); */
 }
 
-/* Light Theme - Clean and minimal */
+/* Light Theme - High contrast and vibrant */
 :root {
-  --background: oklch(100% 0 0); /* white */
-  --foreground: var(--slate-950);
+  --background: oklch(98.5% 0 0); /* slight off-white for softer feel */
+  --foreground: oklch(20% 0.02 280); /* very dark gray, almost black */
 
-  --card: var(--slate-50);
-  --card-foreground: var(--slate-950);
+  --card: oklch(100% 0 0); /* pure white for cards to pop */
+  --card-foreground: oklch(20% 0.02 280);
 
   --popover: oklch(100% 0 0); /* white */
-  --popover-foreground: var(--slate-950);
+  --popover-foreground: oklch(20% 0.02 280);
 
-  --primary: var(--blue-500);
+  --primary: oklch(55% 0.29 265); /* deeper, more saturated blue */
   --primary-foreground: oklch(100% 0 0); /* white */
 
-  --secondary: var(--slate-200);
-  --secondary-foreground: var(--slate-950);
+  --secondary: oklch(94% 0.01 280); /* light gray with slight blue tint */
+  --secondary-foreground: oklch(20% 0.02 280);
 
-  --muted: var(--slate-100);
-  --muted-foreground: var(--slate-500);
+  --muted: oklch(92% 0.01 280); /* medium light gray for empty states */
+  --muted-foreground: oklch(45% 0.02 280); /* darker gray for better contrast */
 
-  --accent: var(--slate-100);
-  --accent-foreground: var(--slate-950);
+  --accent: oklch(94% 0.01 280);
+  --accent-foreground: oklch(20% 0.02 280);
 
-  --destructive: var(--red-500);
+  --destructive: oklch(60% 0.25 25); /* slightly darker red for better contrast */
   --destructive-foreground: oklch(100% 0 0); /* white */
 
-  --border: var(--slate-200);
-  --input: var(--slate-200);
-  --ring: var(--blue-500);
+  --border: oklch(90% 0.01 280); /* darker border for definition */
+  --input: oklch(96% 0.01 280); /* lighter input background */
+  --ring: oklch(55% 0.29 265);
 
   --radius: 0.5rem;
 }
@@ -182,4 +181,17 @@ body {
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease;
+}
+
+/* Enhanced shadows for light theme cards */
+:root .bg-card {
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.dark .bg-card {
+  box-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
