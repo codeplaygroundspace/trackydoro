@@ -72,10 +72,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('trackydoro-theme') || 'dark';
+                if (theme === 'system') {
+                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  document.documentElement.classList.add(systemTheme);
+                } else {
+                  document.documentElement.classList.add(theme);
+                }
+              } catch {}
+            `,
+          }}
+        />
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>

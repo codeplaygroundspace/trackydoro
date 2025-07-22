@@ -91,21 +91,23 @@ export function PomodoroTimer({
           }
           const newTimeLeft = prev - 1;
 
-          // Save session every second while timer is running
-          const totalSeconds =
-            sessionType === 'work'
-              ? TIMER_CONSTANTS.WORK_MINUTES * 60
-              : (pomodoroCount % 4 === 0
-                  ? TIMER_CONSTANTS.LONG_BREAK
-                  : TIMER_CONSTANTS.SHORT_BREAK) * 60;
-          const elapsedSeconds = totalSeconds - newTimeLeft;
-
+          // Save session state with the current time left
+          // No need to calculate elapsed time here as useTimerPersistence will handle it
           saveSession({
             timeLeft: newTimeLeft,
             timerState,
             selectedCategory,
             sessionType,
-            startedAt: Date.now() - elapsedSeconds * 1000,
+            startedAt:
+              Date.now() -
+              (sessionType === 'work'
+                ? TIMER_CONSTANTS.WORK_MINUTES * 60
+                : (pomodoroCount % 4 === 0
+                    ? TIMER_CONSTANTS.LONG_BREAK
+                    : TIMER_CONSTANTS.SHORT_BREAK) *
+                    60 -
+                  newTimeLeft) *
+                1000,
           });
 
           return newTimeLeft;
@@ -144,6 +146,15 @@ export function PomodoroTimer({
     });
     setTimerState('working');
     setSessionType('work');
+
+    // Save initial session with proper startedAt timestamp
+    saveSession({
+      timeLeft: TIMER_CONSTANTS.WORK_MINUTES * 60,
+      timerState: 'working',
+      selectedCategory,
+      sessionType: 'work',
+      startedAt: Date.now(),
+    });
   };
 
   const pauseTimer = () => {
@@ -179,18 +190,14 @@ export function PomodoroTimer({
     <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl border border-border">
       <div className="text-center">
         <div className="relative inline-block">
-          <div className="text-7xl md:text-8xl font-black mb-4 tabular-nums font-mono">
+          <div className="text-7xl md:text-8xl font-black tabular-nums mb-8">
             {formatTime(timeLeft)}
           </div>
         </div>
 
-        <div className="text-base mb-6 text-muted-foreground">
-          {timerState === 'working'
-            ? '🎯 Focus Time'
-            : timerState === 'break'
-              ? '☕ Break Time'
-              : '⏳ Ready to Focus'}
-        </div>
+        {timerState === 'break' && (
+          <div className="text-base mb-6 text-muted-foreground">☕ Break Time</div>
+        )}
 
         <div className="flex gap-4 justify-center mb-6 flex-wrap">
           {categories.length > 0 && isInitialized ? (
@@ -198,7 +205,7 @@ export function PomodoroTimer({
               value={selectedCategory || ''}
               onChange={(e) => onCategoryChange(e.target.value)}
               disabled={timerState !== 'idle'}
-              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+              className="bg-secondary text-secondary-foreground pl-4 pr-12 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
             >
               <option value="" disabled>
                 Select a category
