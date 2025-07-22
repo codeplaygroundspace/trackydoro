@@ -65,10 +65,10 @@ next-env.d.ts
 ehthumbs.db
 Thumbs.db
 
-# package manager locks (keep one)
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+# package manager locks
+package-lock.json
+yarn.lock
+# Keep pnpm-lock.yaml since we're using pnpm
 
 # temporary files
 *.log
