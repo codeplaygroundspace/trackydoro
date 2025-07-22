@@ -42,12 +42,13 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
             Trackydoro
           </h1>
           <button
             onClick={() => setShowAddCategory(true)}
-            className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+            className="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg transition-all duration-200"
+            aria-label="Add category"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -57,7 +58,6 @@ export default function Home() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Add Category
           </button>
         </div>
 
