@@ -47,8 +47,8 @@ export function CategoryRow({
   };
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 hover:bg-gray-800/70 transition-all duration-200">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-3 md:p-4 hover:bg-gray-800/70 transition-all duration-200">
+      <div className="flex items-center justify-between mb-2">
         {isEditing ? (
           editForm
         ) : (
@@ -91,7 +91,7 @@ export function CategoryRow({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-3">
+      <div className="flex flex-wrap gap-1 mb-2">
         {days.map((day) => {
           const { minutes, pomodoros } = getDayData(day);
 
