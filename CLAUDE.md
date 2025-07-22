@@ -31,7 +31,18 @@ Follow these rules when you write code:
 
 - Use early returns whenever possible to make the code more readable.
 - Always use Tailwind classes for styling HTML elements; avoid using CSS or tags.
-- Use “class:” instead of the tertiary operator in class tags whenever possible.
-- Use descriptive variable and function/const names. Also, event functions should be named with a “handle” prefix, like “handleClick” for onClick and “handleKeyDown” for onKeyDown.
-- Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
-- Use consts instead of functions, for example, “const toggle = () =>”. Also, define a type if possible.
+- Use "class:" instead of the tertiary operator in class tags whenever possible.
+- Use descriptive variable and function/const names. Also, event functions should be named with a "handle" prefix, like "handleClick" for onClick and "handleKeyDown" for onKeyDown.
+- Implement accessibility features on elements. For example, a tag should have a tabindex="0", aria-label, on:click, and on:keydown, and similar attributes.
+- Use consts instead of functions, for example, "const toggle = () =>". Also, define a type if possible.
+
+### Theme System Guidelines
+
+- Always use theme CSS variables instead of hardcoded colors (e.g., use `bg-background`, `text-foreground` instead of `bg-gray-900`, `text-white`)
+- Available theme classes:
+  - Backgrounds: `bg-background`, `bg-card`, `bg-popover`, `bg-primary`, `bg-secondary`, `bg-muted`, `bg-accent`, `bg-destructive`
+  - Text colors: `text-foreground`, `text-card-foreground`, `text-popover-foreground`, `text-primary-foreground`, `text-secondary-foreground`, `text-muted-foreground`, `text-accent-foreground`, `text-destructive-foreground`
+  - Borders: `border-border`, `border-input`, `border-ring`
+- Use opacity modifiers when needed (e.g., `bg-card/50` for 50% opacity)
+- The theme automatically switches between light and dark modes based on user preference
+- Never use inline styles for colors unless absolutely necessary (e.g., dynamic user-selected colors)

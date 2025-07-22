@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { Category, DayData } from '@/types';
 import { CategorySquare } from './CategorySquare';
 import { getDaysArray } from '@/lib/utils';
+import { formatWeekRange, getNextWeek, getPreviousWeek } from '@/lib/date-utils';
 
 interface CategoryRowProps {
   category: Category;
@@ -11,6 +13,7 @@ interface CategoryRowProps {
   onDelete: (category: Category) => void;
   isEditing: boolean;
   editForm?: React.ReactNode;
+  view: 'month' | 'week';
 }
 
 export function CategoryRow({
@@ -20,8 +23,10 @@ export function CategoryRow({
   onDelete,
   isEditing,
   editForm,
+  view,
 }: CategoryRowProps) {
-  const days = getDaysArray();
+  const [currentWeekDate, setCurrentWeekDate] = useState(new Date());
+  const days = getDaysArray(view, currentWeekDate);
   const today = new Date().toISOString().split('T')[0];
 
   const getDayData = (date: string) => {
@@ -31,7 +36,7 @@ export function CategoryRow({
 
   const getSquareColor = (date: string) => {
     const { minutes } = getDayData(date);
-    if (minutes === 0) return '#1f2937';
+    if (minutes === 0) return 'var(--muted)';
 
     const percentage = Math.min(minutes / category.target, 1);
     const opacity = 0.2 + percentage * 0.8;
@@ -47,20 +52,20 @@ export function CategoryRow({
   };
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-3 md:p-4 hover:bg-gray-800/70 transition-all duration-200">
+    <div className="bg-card/50 backdrop-blur rounded-xl p-3 md:p-4 hover:bg-card/70 transition-all duration-200">
       <div className="flex items-center justify-between mb-2">
         {isEditing ? (
           editForm
         ) : (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2">
+            <h2 className="text-xl font-black flex items-center gap-2">
               <span className="w-4 h-4 rounded" style={{ backgroundColor: category.color }} />
               {category.name}
             </h2>
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit(category)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 aria-label="Edit category"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +79,7 @@ export function CategoryRow({
               </button>
               <button
                 onClick={() => onDelete(category)}
-                className="text-gray-400 hover:text-red-400 transition-colors"
+                className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
                 aria-label="Delete category"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +96,36 @@ export function CategoryRow({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-2">
+      {view === 'week' && (
+        <div className="flex items-center justify-between mb-2">
+          <button
+            onClick={() => setCurrentWeekDate(getPreviousWeek(currentWeekDate))}
+            className="p-1 hover:bg-secondary rounded transition-colors"
+            aria-label="Previous week"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <span className="text-sm font-medium">Week of {formatWeekRange(currentWeekDate)}</span>
+          <button
+            onClick={() => setCurrentWeekDate(getNextWeek(currentWeekDate))}
+            className="p-1 hover:bg-secondary rounded transition-colors"
+            aria-label="Next week"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      <div className={`flex gap-2 mb-2 ${view === 'week' ? 'justify-between' : 'flex-wrap'}`}>
         {days.map((day) => {
           const { minutes, pomodoros } = getDayData(day);
 
@@ -103,12 +137,13 @@ export function CategoryRow({
               pomodoros={pomodoros}
               color={getSquareColor(day)}
               isToday={day === today}
+              size={view === 'week' ? 'large' : 'small'}
             />
           );
         })}
       </div>
 
-      <div className="flex items-center justify-between text-sm text-gray-400">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>Target: {category.target} min/day</span>
         <span>{getTodayProgress()}% of target</span>
       </div>

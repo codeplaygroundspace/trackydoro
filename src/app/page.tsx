@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
 import { Modal, ConfirmDialog } from '@/components/ui';
+import { ViewToggle } from '@/components/ui/ViewToggle';
+import { ThemeToggle } from '@/components/theme';
 import { useCategories, usePomodoroTracking } from '@/hooks';
 import { Category } from '@/types';
 
@@ -24,6 +26,7 @@ export default function Home() {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
+  const [view, setView] = useState<'month' | 'week'>('month');
 
   const handlePomodoroComplete = (categoryId: string) => {
     recordPomodoro(categoryId);
@@ -38,27 +41,40 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen text-foreground p-4 md:p-8 relative">
+      {/* Gradient background */}
+      <div className="fixed inset-0 bg-background">
+        <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 via-transparent to-transparent" />
+      </div>
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-black text-foreground dark:text-primary tracking-wide">
             Trackydoro
           </h1>
-          <button
-            onClick={() => setShowAddCategory(true)}
-            className="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg transition-all duration-200"
-            aria-label="Add category"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <ViewToggle view={view} onViewChange={setView} />
+            <ThemeToggle />
+            <button
+              onClick={() => setShowAddCategory(true)}
+              className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="Add category"
+            >
+              <svg
+                className="w-5 h-5 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <PomodoroTimer
@@ -75,6 +91,7 @@ export default function Home() {
           editingCategory={editingCategory}
           onEdit={setEditingCategory}
           onDelete={setDeletingCategory}
+          view={view}
           editForm={(category) => (
             <CategoryForm
               initialValues={category}
@@ -88,7 +105,7 @@ export default function Home() {
         />
 
         {/* Progress Legend */}
-        <div className="mt-8 flex items-center gap-4 text-sm text-gray-500">
+        <div className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
           <span>Less</span>
           <div className="flex gap-1">
             {[0, 25, 50, 75, 100].map((value) => (
@@ -97,11 +114,7 @@ export default function Home() {
                 className="w-4 h-4 rounded"
                 style={{
                   backgroundColor:
-                    value === 0
-                      ? '#1f2937'
-                      : `#3b82f6${Math.round((value / 100) * 255)
-                          .toString(16)
-                          .padStart(2, '0')}`,
+                    value === 0 ? 'var(--card)' : `oklch(from var(--primary) l c h / ${value}%)`,
                 }}
               />
             ))}
