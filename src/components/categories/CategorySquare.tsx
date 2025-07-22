@@ -1,6 +1,6 @@
 'use client';
 
-import { getDateDisplay } from '@/lib/utils';
+import { getDateDisplay } from '@/lib/date-utils';
 
 interface CategorySquareProps {
   date: string;

@@ -16,14 +16,27 @@ export function useCategories() {
   const [categoryData, setCategoryData] = useLocalStorage<CategoryData[]>('lifeTrackerData', []);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Only set selected category after hydration
-    if (!isInitialized && categories.length > 0) {
-      setSelectedCategory(categories[0].id);
-      setIsInitialized(true);
-    }
-  }, [categories, isInitialized]);
+    // Simulate loading data (in a real app, this would be an API call)
+    const loadData = async () => {
+      setIsLoading(true);
+
+      // Small delay to show loading state
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Only set selected category after hydration
+      if (!isInitialized && categories.length > 0) {
+        setSelectedCategory(categories[0].id);
+        setIsInitialized(true);
+      }
+
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, [categories.length, isInitialized]);
 
   const addCategory = (name: string, color: string, target: number) => {
     const newCategory: Category = {
@@ -98,5 +111,6 @@ export function useCategories() {
     updateCategory,
     deleteCategory,
     recordPomodoro,
+    isLoading,
   };
 }

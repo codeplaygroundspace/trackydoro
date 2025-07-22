@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Category, DayData } from '@/types';
 import { CategorySquare } from './CategorySquare';
-import { getDaysArray } from '@/lib/utils';
+import { getDaysArray } from '@/lib/date-utils';
 import { formatWeekRange, getNextWeek, getPreviousWeek } from '@/lib/date-utils';
 
 interface CategoryRowProps {

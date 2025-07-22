@@ -34,11 +34,6 @@ export function ThemeProvider({
     }
     return defaultTheme;
   });
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;

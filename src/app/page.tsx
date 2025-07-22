@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
 import { Modal, ConfirmDialog } from '@/components/ui';
 import { ViewToggle } from '@/components/ui/ViewToggle';
 import { ThemeToggle } from '@/components/theme';
+import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useCategories, usePomodoroTracking } from '@/hooks';
 import { Category } from '@/types';
 
@@ -19,6 +20,7 @@ export default function Home() {
     updateCategory,
     deleteCategory,
     recordPomodoro,
+    isLoading,
   } = useCategories();
 
   const { pomodoroCount, incrementPomodoro } = usePomodoroTracking();
@@ -77,50 +79,61 @@ export default function Home() {
           </div>
         </div>
 
-        <PomodoroTimer
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          onPomodoroComplete={handlePomodoroComplete}
-          pomodoroCount={pomodoroCount}
-        />
-
-        <CategoryGrid
-          categories={categories}
-          categoryData={categoryData}
-          editingCategory={editingCategory}
-          onEdit={setEditingCategory}
-          onDelete={setDeletingCategory}
-          view={view}
-          editForm={(category) => (
-            <CategoryForm
-              initialValues={category}
-              onSubmit={(name, color, target) => {
-                updateCategory(category.id, name, color, target);
-                setEditingCategory(null);
-              }}
-              onCancel={() => setEditingCategory(null)}
+        {isLoading ? (
+          <>
+            <TimerSkeleton />
+            <CategoryGridSkeleton />
+          </>
+        ) : (
+          <>
+            <PomodoroTimer
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              onPomodoroComplete={handlePomodoroComplete}
+              pomodoroCount={pomodoroCount}
             />
-          )}
-        />
 
-        {/* Progress Legend */}
-        <div className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
-          <span>Less</span>
-          <div className="flex gap-1">
-            {[0, 25, 50, 75, 100].map((value) => (
-              <div
-                key={value}
-                className="w-4 h-4 rounded"
-                style={{
-                  backgroundColor:
-                    value === 0 ? 'var(--card)' : `oklch(from var(--primary) l c h / ${value}%)`,
-                }}
-              />
-            ))}
-          </div>
-          <span>More</span>
-        </div>
+            <CategoryGrid
+              categories={categories}
+              categoryData={categoryData}
+              editingCategory={editingCategory}
+              onEdit={setEditingCategory}
+              onDelete={setDeletingCategory}
+              view={view}
+              editForm={(category) => (
+                <CategoryForm
+                  initialValues={category}
+                  onSubmit={(name, color, target) => {
+                    updateCategory(category.id, name, color, target);
+                    setEditingCategory(null);
+                  }}
+                  onCancel={() => setEditingCategory(null)}
+                />
+              )}
+            />
+
+            {/* Progress Legend */}
+            <div className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
+              <span>Less</span>
+              <div className="flex gap-1">
+                {[0, 25, 50, 75, 100].map((value) => (
+                  <div
+                    key={value}
+                    className="w-4 h-4 rounded"
+                    style={{
+                      backgroundColor:
+                        value === 0
+                          ? 'var(--card)'
+                          : `oklch(from var(--primary) l c h / ${value}%)`,
+                    }}
+                  />
+                ))}
+              </div>
+              <span>More</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Add Category Modal */}
