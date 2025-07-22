@@ -28,19 +28,19 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Category name"
-        className="w-full bg-gray-700 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
         autoFocus
       />
 
       <div>
-        <label className="block text-sm text-gray-400 mb-2">Color</label>
+        <label className="block text-sm text-muted-foreground mb-2">Color</label>
         <div className="flex gap-2 flex-wrap">
           {COLORS.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setColor(c)}
-              className={`w-8 h-8 rounded-lg transition-all duration-200 ${
+              className={`w-8 h-8 rounded-lg transition-all duration-200 cursor-pointer ${
                 color === c ? 'ring-2 ring-white scale-110' : ''
               }`}
               style={{ backgroundColor: c }}
@@ -51,7 +51,9 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
       </div>
 
       <div>
-        <label className="block text-sm text-gray-400 mb-2">Daily target: {target} minutes</label>
+        <label className="block text-sm text-muted-foreground mb-2">
+          Daily target: {target} minutes
+        </label>
         <input
           type="range"
           min="15"
@@ -67,13 +69,13 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
+          className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-colors cursor-pointer"
         >
           {initialValues ? 'Update' : 'Add'}
         </button>

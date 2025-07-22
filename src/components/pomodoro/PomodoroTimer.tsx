@@ -23,6 +23,7 @@ export function PomodoroTimer({
   const [timeLeft, setTimeLeft] = useState(TIMER_CONSTANTS.WORK_MINUTES * 60);
   const [timerState, setTimerState] = useState<TimerState>('idle');
   const [isInitialized, setIsInitialized] = useState(false);
+  const [sessionType, setSessionType] = useState<'work' | 'break'>('work');
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -30,15 +31,14 @@ export function PomodoroTimer({
 
   // Initialize audio and load saved session
   useEffect(() => {
-    audioRef.current = new Audio(
-      'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT',
-    );
+    audioRef.current = new Audio('/sounds/sound-run-time.wav');
 
     // Load saved timer session
     const savedSession = loadSession();
     if (savedSession) {
       setTimeLeft(savedSession.timeLeft);
       setTimerState(savedSession.timerState);
+      setSessionType(savedSession.sessionType || 'work');
       if (
         savedSession.selectedCategory &&
         categories.some((c) => c.id === savedSession.selectedCategory)
@@ -61,9 +61,11 @@ export function PomodoroTimer({
       const isLongBreak = newCount % 4 === 0;
       setTimeLeft((isLongBreak ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK) * 60);
       setTimerState('break');
+      setSessionType('break');
     } else {
       setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
       setTimerState('idle');
+      setSessionType('work');
     }
   }, [timerState, selectedCategory, pomodoroCount, onPomodoroComplete, clearSession]);
 
@@ -78,22 +80,20 @@ export function PomodoroTimer({
           const newTimeLeft = prev - 1;
 
           // Save session every second while timer is running
+          const totalSeconds =
+            sessionType === 'work'
+              ? TIMER_CONSTANTS.WORK_MINUTES * 60
+              : (pomodoroCount % 4 === 0
+                  ? TIMER_CONSTANTS.LONG_BREAK
+                  : TIMER_CONSTANTS.SHORT_BREAK) * 60;
+          const elapsedSeconds = totalSeconds - newTimeLeft;
+
           saveSession({
             timeLeft: newTimeLeft,
             timerState,
             selectedCategory,
-            startedAt:
-              Date.now() -
-              ((timerState === 'working'
-                ? TIMER_CONSTANTS.WORK_MINUTES
-                : timerState === 'break'
-                  ? pomodoroCount % 4 === 0
-                    ? TIMER_CONSTANTS.LONG_BREAK
-                    : TIMER_CONSTANTS.SHORT_BREAK
-                  : TIMER_CONSTANTS.WORK_MINUTES) *
-                60 -
-                newTimeLeft) *
-                1000,
+            sessionType,
+            startedAt: Date.now() - elapsedSeconds * 1000,
           });
 
           return newTimeLeft;
@@ -115,11 +115,12 @@ export function PomodoroTimer({
         clearInterval(intervalRef.current);
       }
     };
-  }, [timerState, handleTimerComplete, selectedCategory, pomodoroCount, saveSession, clearSession]);
+  }, [timerState, handleTimerComplete, selectedCategory, pomodoroCount, saveSession, clearSession, sessionType]);
 
   const startTimer = () => {
     if (!selectedCategory) return;
     setTimerState('working');
+    setSessionType('work');
   };
 
   const pauseTimer = () => {
@@ -129,33 +130,32 @@ export function PomodoroTimer({
       timeLeft,
       timerState: 'paused',
       selectedCategory,
+      sessionType,
       pausedAt: Date.now(),
     });
   };
 
   const resumeTimer = () => {
-    setTimerState(timeLeft === TIMER_CONSTANTS.WORK_MINUTES * 60 ? 'working' : 'break');
+    setTimerState(sessionType === 'work' ? 'working' : 'break');
   };
 
   const resetTimer = () => {
     setTimerState('idle');
     setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
+    setSessionType('work');
     clearSession();
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 mb-8 shadow-2xl">
+    <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl border border-border">
       <div className="text-center">
         <div className="relative inline-block">
-          <div className="text-7xl md:text-8xl font-mono font-bold mb-4 tabular-nums">
+          <div className="text-7xl md:text-8xl font-black mb-4 tabular-nums font-mono">
             {formatTime(timeLeft)}
           </div>
-          {timerState === 'working' && (
-            <div className="absolute -right-2 -top-2 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-          )}
         </div>
 
-        <div className="text-xl mb-6 text-gray-300">
+        <div className="text-base mb-6 text-muted-foreground">
           {timerState === 'working'
             ? '🎯 Focus Time'
             : timerState === 'break'
@@ -169,7 +169,7 @@ export function PomodoroTimer({
               value={selectedCategory || ''}
               onChange={(e) => onCategoryChange(e.target.value)}
               disabled={timerState !== 'idle'}
-              className="bg-gray-700 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
             >
               <option value="" disabled>
                 Select a category
@@ -181,13 +181,13 @@ export function PomodoroTimer({
               ))}
             </select>
           ) : categories.length === 0 ? (
-            <div className="text-gray-400">Add a category to get started</div>
+            <div className="text-muted-foreground">Add a category to get started</div>
           ) : null}
 
           {timerState === 'idle' && categories.length > 0 && (
             <button
               onClick={startTimer}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
             >
               Start Pomodoro
             </button>
@@ -196,7 +196,7 @@ export function PomodoroTimer({
           {(timerState === 'working' || timerState === 'break') && (
             <button
               onClick={pauseTimer}
-              className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
             >
               Pause
             </button>
@@ -205,7 +205,7 @@ export function PomodoroTimer({
           {timerState === 'paused' && (
             <button
               onClick={resumeTimer}
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
             >
               Resume
             </button>
@@ -214,14 +214,14 @@ export function PomodoroTimer({
           {timerState !== 'idle' && (
             <button
               onClick={resetTimer}
-              className="bg-gray-700 hover:bg-gray-600 px-8 py-2 rounded-lg font-semibold transition-all duration-200"
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-8 py-2 rounded-lg font-semibold transition-all duration-200 cursor-pointer"
             >
               Reset
             </button>
           )}
         </div>
 
-        <div className="flex justify-center gap-8 text-sm text-gray-400">
+        <div className="flex justify-center gap-8 text-sm text-muted-foreground">
           <div>Today: {pomodoroCount} 🍅</div>
           <div>Streak: {pomodoroCount > 0 ? Math.floor(pomodoroCount / 4) : 0} cycles</div>
         </div>

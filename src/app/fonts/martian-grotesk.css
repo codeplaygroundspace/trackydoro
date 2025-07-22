@@ -1,0 +1,26 @@
+/* Martian Grotesk Variable Font */
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('./MartianGrotesk-VFVF.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-stretch: 75% 130%;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* Fallback for browsers that don't support variable fonts */
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('./MartianGrotesk-StdRg.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('./MartianGrotesk-StdBd.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}

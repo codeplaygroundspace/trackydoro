@@ -21,16 +21,16 @@ export function ConfirmDialog({
   message,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  confirmClassName = 'bg-red-600 hover:bg-red-700',
+  confirmClassName = 'bg-destructive hover:bg-destructive/90 text-destructive-foreground',
 }: ConfirmDialogProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
-      <p className="text-gray-300 mb-6">{message}</p>
+      <p className="text-muted-foreground mb-6">{message}</p>
       <div className="flex gap-3 justify-end">
         <button
           onClick={onClose}
-          className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
+          className="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors cursor-pointer"
         >
           {cancelText}
         </button>
@@ -39,7 +39,7 @@ export function ConfirmDialog({
             onConfirm();
             onClose();
           }}
-          className={`px-4 py-2 rounded-lg transition-colors ${confirmClassName}`}
+          className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${confirmClassName}`}
         >
           {confirmText}
         </button>

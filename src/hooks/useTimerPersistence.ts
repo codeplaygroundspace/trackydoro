@@ -6,6 +6,7 @@ interface TimerSession {
   timeLeft: number;
   timerState: TimerState;
   selectedCategory: string;
+  sessionType?: 'work' | 'break';
   startedAt?: number;
   pausedAt?: number;
 }

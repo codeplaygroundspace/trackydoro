@@ -35,7 +35,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl"
+        className="bg-card text-card-foreground rounded-xl p-6 max-w-md w-full shadow-2xl border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
