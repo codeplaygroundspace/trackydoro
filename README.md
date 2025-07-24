@@ -39,7 +39,7 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 ### Prerequisites
 
 - Node.js 18.17 or later
-- npm, yarn, pnpm, or bun
+- Bun (recommended) or npm, yarn, pnpm
 
 ### Installation
 
@@ -53,25 +53,13 @@ cd trackydoro
 2. Install dependencies:
 
 ```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
 bun install
 ```
 
 3. Run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -101,13 +89,13 @@ Trackydoro features a sophisticated theme system with carefully crafted light an
 ## 📝 Available Scripts
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run lint:fix     # Fix ESLint errors
-npm run format       # Format code with Prettier
-npm run format:check # Check code formatting
+bun run dev          # Start development server
+bun run build        # Build for production
+bun run start        # Start production server
+bun run lint         # Run ESLint
+bun run lint:fix     # Fix ESLint errors
+bun run format       # Format code with Prettier
+bun run format:check # Check code formatting
 ```
 
 ## 🛠️ Tech Stack
@@ -162,13 +150,13 @@ trackydoro/
 1. Build the application:
 
 ```bash
-npm run build
+bun run build
 ```
 
 2. Start the production server:
 
 ```bash
-npm run start
+bun run start
 ```
 
 ### Environment Variables
