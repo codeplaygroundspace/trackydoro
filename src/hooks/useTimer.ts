@@ -60,9 +60,10 @@ export function useTimer({
       const newCount = pomodoroCount + 1;
       const isLongBreak = newCount % 4 === 0;
       setTimeLeft((isLongBreak ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK) * 60);
-      setTimerState('break');
+      setTimerState('idle');
       setSessionType('break');
     } else {
+      // Break completed, go back to work mode
       setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
       setTimerState('idle');
       setSessionType('work');
@@ -137,17 +138,35 @@ export function useTimer({
 
   const startTimer = useCallback(() => {
     if (!selectedCategory) return;
-    setTimerState('working');
-    setSessionType('work');
 
-    saveSession({
-      timeLeft: TIMER_CONSTANTS.WORK_MINUTES * 60,
-      timerState: 'working',
-      selectedCategory,
-      sessionType: 'work',
-      startedAt: Date.now(),
-    });
-  }, [selectedCategory, saveSession]);
+    if (sessionType === 'break') {
+      // Starting a break
+      setTimerState('break');
+
+      const breakMinutes =
+        pomodoroCount % 4 === 0 ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK;
+
+      saveSession({
+        timeLeft: breakMinutes * 60,
+        timerState: 'break',
+        selectedCategory,
+        sessionType: 'break',
+        startedAt: Date.now(),
+      });
+    } else {
+      // Starting work session
+      setTimerState('working');
+      setSessionType('work');
+
+      saveSession({
+        timeLeft: TIMER_CONSTANTS.WORK_MINUTES * 60,
+        timerState: 'working',
+        selectedCategory,
+        sessionType: 'work',
+        startedAt: Date.now(),
+      });
+    }
+  }, [selectedCategory, sessionType, pomodoroCount, saveSession]);
 
   const pauseTimer = useCallback(() => {
     setTimerState('paused');

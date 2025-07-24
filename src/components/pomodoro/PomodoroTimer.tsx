@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Category } from '@/types';
 import { useTimer } from '@/hooks/useTimer';
 import { useAudio } from '@/hooks/useAudio';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { TimerDisplay } from './TimerDisplay';
 import { TimerControls } from './TimerControls';
 
@@ -33,7 +34,6 @@ export function PomodoroTimer({
     startTimer: startTimerBase,
     pauseTimer,
     resumeTimer: resumeTimerBase,
-    resetTimer: resetTimerBase,
   } = useTimer({
     selectedCategory,
     pomodoroCount,
@@ -61,10 +61,24 @@ export function PomodoroTimer({
     resumeTimerBase();
   };
 
-  const handleReset = () => {
-    playSound('reset');
-    resetTimerBase();
-  };
+  // Keyboard shortcuts for timer controls
+  useKeyboardShortcuts(
+    [
+      {
+        key: ' ',
+        handler: () => {
+          if (timerState === 'idle' && selectedCategory && categories.length > 0) {
+            handleStart();
+          } else if (timerState === 'working' || timerState === 'break') {
+            pauseTimer();
+          } else if (timerState === 'paused') {
+            handleResume();
+          }
+        },
+      },
+    ],
+    isInitialized,
+  );
 
   if (!isInitialized) {
     return (
@@ -84,7 +98,7 @@ export function PomodoroTimer({
   }
 
   return (
-    <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl border border-border">
+    <div className="bg-card rounded-2xl py-8 px-12 mb-8 shadow-2xl border border-border">
       <div className="text-center">
         <TimerDisplay timeLeft={timeLeft} timerState={timerState} sessionType={sessionType} />
 
@@ -97,13 +111,7 @@ export function PomodoroTimer({
           onStart={handleStart}
           onPause={pauseTimer}
           onResume={handleResume}
-          onReset={handleReset}
         />
-
-        <div className="flex justify-center gap-8 text-sm text-muted-foreground">
-          <div>Today: {pomodoroCount} 🍅</div>
-          <div>Streak: {pomodoroCount > 0 ? Math.floor(pomodoroCount / 4) : 0} cycles</div>
-        </div>
       </div>
     </div>
   );
