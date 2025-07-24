@@ -5,6 +5,7 @@ import { Category, DayData } from '@/types';
 import { CategorySquare } from './CategorySquare';
 import { getDaysArray } from '@/lib/date-utils';
 import { formatWeekRange, getNextWeek, getPreviousWeek } from '@/lib/date-utils';
+import { EditIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/icons';
 
 interface CategoryRowProps {
   category: Category;
@@ -65,31 +66,31 @@ export function CategoryRow({
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit(category)}
-                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                aria-label="Edit category"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onEdit(category);
+                  }
+                }}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
+                aria-label={`Edit ${category.name} category`}
+                tabIndex={0}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
+                <EditIcon className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(category)}
-                className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
-                aria-label="Delete category"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onDelete(category);
+                  }
+                }}
+                className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
+                aria-label={`Delete ${category.name} category`}
+                tabIndex={0}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
+                <TrashIcon className="w-4 h-4" />
               </button>
             </div>
           </>
@@ -100,27 +101,32 @@ export function CategoryRow({
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => setCurrentWeekDate(getPreviousWeek(currentWeekDate))}
-            className="p-1 hover:bg-secondary rounded transition-colors"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setCurrentWeekDate(getPreviousWeek(currentWeekDate));
+              }
+            }}
+            className="p-1 hover:bg-secondary rounded transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Previous week"
+            tabIndex={0}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <ChevronLeftIcon className="w-4 h-4" />
           </button>
           <span className="text-sm font-medium">Week of {formatWeekRange(currentWeekDate)}</span>
           <button
             onClick={() => setCurrentWeekDate(getNextWeek(currentWeekDate))}
-            className="p-1 hover:bg-secondary rounded transition-colors"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setCurrentWeekDate(getNextWeek(currentWeekDate));
+              }
+            }}
+            className="p-1 hover:bg-secondary rounded transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Next week"
+            tabIndex={0}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronRightIcon className="w-4 h-4" />
           </button>
         </div>
       )}

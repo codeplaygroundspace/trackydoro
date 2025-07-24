@@ -14,9 +14,21 @@ const DEFAULT_CATEGORIES: Category[] = [
 export function useCategories() {
   const [categories, setCategories] = useLocalStorage<Category[]>('categories', DEFAULT_CATEGORIES);
   const [categoryData, setCategoryData] = useLocalStorage<CategoryData[]>('lifeTrackerData', []);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [lastSelectedCategory, setLastSelectedCategory] = useLocalStorage<string>(
+    'lastSelectedCategory',
+    '',
+  );
+  const [selectedCategory, setSelectedCategoryState] = useState<string>('');
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Wrapper to persist selected category
+  const setSelectedCategory = (categoryId: string) => {
+    setSelectedCategoryState(categoryId);
+    if (categoryId) {
+      setLastSelectedCategory(categoryId);
+    }
+  };
 
   useEffect(() => {
     // Simulate loading data (in a real app, this would be an API call)
@@ -28,7 +40,11 @@ export function useCategories() {
 
       // Only set selected category after hydration
       if (!isInitialized && categories.length > 0) {
-        setSelectedCategory(categories[0].id);
+        // Check if last selected category still exists
+        if (lastSelectedCategory && categories.some((cat) => cat.id === lastSelectedCategory)) {
+          setSelectedCategoryState(lastSelectedCategory);
+        }
+        // Don't auto-select first category - let user choose
         setIsInitialized(true);
       }
 
@@ -36,7 +52,7 @@ export function useCategories() {
     };
 
     loadData();
-  }, [categories.length, isInitialized]);
+  }, [categories, isInitialized, lastSelectedCategory]);
 
   const addCategory = (name: string, color: string, target: number) => {
     const newCategory: Category = {

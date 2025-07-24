@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
-import { Modal, ConfirmDialog } from '@/components/ui';
+import { Modal, ConfirmDialog, KeyboardShortcuts } from '@/components/ui';
 import { ViewToggle } from '@/components/ui/ViewToggle';
 import { ThemeToggle } from '@/components/theme';
 import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useCategories, usePomodoroTracking } from '@/hooks';
+import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { OutlineKeyboard, PlusIcon } from '@/components/icons';
 import { Category } from '@/types';
 
 export default function Home() {
@@ -29,6 +31,7 @@ export default function Home() {
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
   const [view, setView] = useState<'month' | 'week'>('month');
+  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
   const handlePomodoroComplete = (categoryId: string) => {
     recordPomodoro(categoryId);
@@ -42,8 +45,63 @@ export default function Home() {
     }
   };
 
+  const { modifierKey } = useGlobalKeyboardShortcuts();
+
+  // Handle category navigation with arrow keys
+  const handleCategoryNavigation = useCallback(
+    (direction: 'up' | 'down') => {
+      if (categories.length === 0) return;
+
+      const currentIndex = categories.findIndex((cat) => cat.id === selectedCategory);
+      let newIndex: number;
+
+      if (direction === 'up') {
+        newIndex = currentIndex <= 0 ? categories.length - 1 : currentIndex - 1;
+      } else {
+        newIndex = currentIndex >= categories.length - 1 ? 0 : currentIndex + 1;
+      }
+
+      setSelectedCategory(categories[newIndex].id);
+    },
+    [categories, selectedCategory, setSelectedCategory],
+  );
+
+  // Keyboard shortcuts for category management
+  useKeyboardShortcuts(
+    [
+      {
+        key: 'n',
+        ctrl: modifierKey === 'ctrl',
+        cmd: modifierKey === 'cmd',
+        handler: () => setShowAddCategory(true),
+      },
+      {
+        key: 'ArrowUp',
+        handler: () => handleCategoryNavigation('up'),
+      },
+      {
+        key: 'ArrowDown',
+        handler: () => handleCategoryNavigation('down'),
+      },
+      {
+        key: '?',
+        handler: () => setShowKeyboardShortcuts(true),
+      },
+      // Number keys for quick category selection
+      ...Array.from({ length: 9 }, (_, i) => ({
+        key: String(i + 1),
+        handler: () => {
+          if (categories[i]) {
+            setSelectedCategory(categories[i].id);
+          }
+        },
+      })),
+    ],
+    !isLoading,
+  );
+
   return (
-    <div className="min-h-screen text-foreground p-4 md:p-8 relative">
+    <main className="min-h-screen text-foreground p-4 md:p-8 relative" role="main">
       {/* Gradient background */}
       <div className="fixed inset-0 bg-background">
         <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 via-transparent to-transparent" />
@@ -58,23 +116,19 @@ export default function Home() {
             <ViewToggle view={view} onViewChange={setView} />
             <ThemeToggle />
             <button
+              onClick={() => setShowKeyboardShortcuts(true)}
+              className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="View keyboard shortcuts (Press ? key)"
+              title="Keyboard shortcuts (?)"
+            >
+              <OutlineKeyboard className="w-5 h-5 text-primary" />
+            </button>
+            <button
               onClick={() => setShowAddCategory(true)}
               className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-              aria-label="Add category"
+              aria-label="Add new category (Cmd/Ctrl+N)"
             >
-              <svg
-                className="w-5 h-5 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <PlusIcon className="w-5 h-5 text-primary" />
             </button>
           </div>
         </div>
@@ -157,6 +211,12 @@ export default function Home() {
         message={`Are you sure you want to delete "${deletingCategory?.name}"? This will remove all tracking data for this category and cannot be undone.`}
         confirmText="Delete"
       />
-    </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcuts
+        isOpen={showKeyboardShortcuts}
+        onClose={() => setShowKeyboardShortcuts(false)}
+      />
+    </main>
   );
 }
