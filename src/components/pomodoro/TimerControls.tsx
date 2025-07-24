@@ -11,6 +11,7 @@ interface TimerControlsProps {
   onStart: () => void;
   onPause: () => void;
   onResume: () => void;
+  onReset: () => void;
 }
 
 export function TimerControls({
@@ -22,6 +23,7 @@ export function TimerControls({
   onStart,
   onPause,
   onResume,
+  onReset,
 }: TimerControlsProps) {
   return (
     <div className="flex flex-col items-center gap-4 mb-6">
@@ -31,10 +33,10 @@ export function TimerControls({
           onChange={(e) => onCategoryChange(e.target.value)}
           disabled={timerState !== 'idle'}
           className="bg-secondary text-secondary-foreground px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 w-64 h-12 font-semibold"
-          aria-label="Select category for timer"
+          aria-label="Select project for timer"
         >
           <option value="" disabled>
-            Select a category
+            Select a project
           </option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
@@ -43,7 +45,7 @@ export function TimerControls({
           ))}
         </select>
       ) : categories.length === 0 ? (
-        <div className="text-muted-foreground">Add a category to get started</div>
+        <div className="text-muted-foreground">Add a project to get started</div>
       ) : null}
 
       <div className="flex flex-col gap-4">
@@ -75,6 +77,16 @@ export function TimerControls({
             aria-label="Resume timer (Spacebar)"
           >
             Resume
+          </button>
+        )}
+
+        {(timerState === 'working' || timerState === 'break' || timerState === 'paused') && (
+          <button
+            onClick={onReset}
+            className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors cursor-pointer"
+            aria-label="Reset timer"
+          >
+            Reset
           </button>
         )}
       </div>

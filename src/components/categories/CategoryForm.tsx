@@ -27,7 +27,7 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Category name"
+        placeholder="Project name"
         className="w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
         autoFocus
       />

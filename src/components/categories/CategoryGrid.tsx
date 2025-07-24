@@ -10,7 +10,6 @@ interface CategoryGridProps {
   onEdit: (categoryId: string) => void;
   onDelete: (category: Category) => void;
   editForm: (category: Category) => React.ReactNode;
-  view: 'month' | 'week';
 }
 
 export function CategoryGrid({
@@ -20,7 +19,6 @@ export function CategoryGrid({
   onEdit,
   onDelete,
   editForm,
-  view,
 }: CategoryGridProps) {
   const getCategoryData = (categoryId: string) => {
     const data = categoryData.find((c) => c.categoryId === categoryId);
@@ -31,8 +29,8 @@ export function CategoryGrid({
     return (
       <div className="text-center py-12 text-muted-foreground">
         <div className="text-6xl mb-4">📝</div>
-        <div className="text-xl">No categories yet!</div>
-        <div className="text-sm mt-2">Click &quot;Add Category&quot; to get started</div>
+        <div className="text-xl">No projects yet!</div>
+        <div className="text-sm mt-2">Click &quot;Add Project&quot; to get started</div>
       </div>
     );
   }
@@ -48,7 +46,6 @@ export function CategoryGrid({
           onDelete={onDelete}
           isEditing={editingCategory === category.id}
           editForm={editingCategory === category.id ? editForm(category) : undefined}
-          view={view}
         />
       ))}
     </div>

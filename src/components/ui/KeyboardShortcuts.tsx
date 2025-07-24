@@ -32,10 +32,11 @@ export function KeyboardShortcuts({ isOpen, onClose }: KeyboardShortcutsProps) {
 
   const shortcuts = [
     { keys: ['Space'], description: 'Start/Pause timer' },
+    { keys: ['R'], description: 'Reset timer' },
     { keys: ['Esc'], description: 'Close modals' },
-    { keys: [modifierKey, 'N'], description: 'New category' },
-    { keys: ['1-9'], description: 'Quick category selection' },
-    { keys: ['↑', '↓'], description: 'Navigate between categories' },
+    { keys: [modifierKey, 'N'], description: 'New project' },
+    { keys: ['1-9'], description: 'Quick project selection' },
+    { keys: ['↑', '↓'], description: 'Navigate between projects' },
     { keys: ['?'], description: 'Show keyboard shortcuts' },
   ];
 
