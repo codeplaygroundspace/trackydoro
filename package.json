@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "node -e \"if (process.env npm_execpath && !process.env.npm_execpath.includes('bun')) {console.error('\\n⚠️  Error: This project uses Bun!\\n\\nPlease use: bun install\\n');process.exit(1); }\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -10,7 +11,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run format:check && npm run lint"
+    "check": "bun run format:check && bun run lint"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
