@@ -25,8 +25,8 @@ const About = () => {
         The Pomodoro Technique is created by Francesco Cirillo for a more productive way to work and
         study. The technique uses a timer to break down work into intervals, traditionally 25
         minutes in length, separated by short breaks. Each interval is known as a pomodoro, from the
-        Italian word for &apos;tomato&apos;, after the tomato-shaped kitchen timer that Cirillo used as a
-        university student. -{' '}
+        Italian word for &apos;tomato&apos;, after the tomato-shaped kitchen timer that Cirillo used
+        as a university student. -{' '}
         <a
           href="https://en.wikipedia.org/wiki/Pomodoro_Technique"
           target="_blank"
@@ -47,26 +47,6 @@ const About = () => {
         <li>Take a break for 5 minutes when the alarm ring</li>
         <li>Iterate 3-5 until you finish the projects</li>
       </ol>
-
-      <h2 className="text-xl font-semibold text-foreground mb-4">Basic Features</h2>
-      <ul className="space-y-3 text-muted-foreground">
-        <li className="flex">
-          <span className="font-medium text-foreground mr-2">Estimate Finish Time:</span>
-          <span>Get an estimate of the time required to complete your daily projects.</span>
-        </li>
-        <li className="flex">
-          <span className="font-medium text-foreground mr-2">Add Templates:</span>
-          <span>Save your repetitive projects as templates and add them with just one click.</span>
-        </li>
-        <li className="flex">
-          <span className="font-medium text-foreground mr-2">Visual Reports:</span>
-          <span>See how much time you&apos;ve focused each day, week, and month.</span>
-        </li>
-        <li className="flex">
-          <span className="font-medium text-foreground mr-2">Custom Settings:</span>
-          <span>Personalize your focus/break time, alarm sounds, background sounds, and more.</span>
-        </li>
-      </ul>
     </div>
   );
 };
