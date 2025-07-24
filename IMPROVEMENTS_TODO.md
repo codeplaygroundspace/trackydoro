@@ -1,21 +1,5 @@
 # Trackydoro Improvements Todo List
 
-## Overview
-
-This document outlines comprehensive improvements for the Trackydoro project, organized by priority and category. Each item includes specific implementation details to enhance user experience, code quality, and feature completeness.
-
-## 🔴 High Priority Tasks
-
-Critical improvements for core functionality and user experience.
-
-### 3. Browser Notifications
-
-**Description:** Implement web notifications for timer events
-
-- Add ARIA labels to all interactive elements
-- Implement ARIA live regions for timer updates
-- Ensure all actions are keyboard accessible
-
 ### 5. Error Handling & Boundaries
 
 **Description:** Implement robust error handling throughout the app  
@@ -60,32 +44,6 @@ Feature enhancements that significantly improve the user experience.
 - Default category selection
 - Data management options
 - Keyboard shortcut customization
-
-### 8. Enhanced UI States
-
-**Description:** Improve visual feedback and empty states  
-**Implementation:**
-
-- Engaging empty state illustrations
-- Loading skeletons for all async operations
-- Progress indicators for long operations
-- Success/error toast notifications
-- Smooth state transitions
-- Offline mode indicator
-- Sync status indicators (for future)
-
-### 9. Timer Presets
-
-**Description:** Support different productivity techniques  
-**Implementation:**
-
-- Classic Pomodoro (25/5/15)
-- 52/17 method
-- 45/15 method
-- 90/20 method
-- Custom timer creation
-- Save and name custom presets
-- Quick preset switcher
 
 ### 10. Automatic Data Backup
 

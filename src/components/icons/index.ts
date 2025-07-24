@@ -6,5 +6,4 @@ export { EditIcon } from './EditIcon';
 export { TrashIcon } from './TrashIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
-export { CalendarMonthIcon } from './CalendarMonthIcon';
-export { CalendarWeekIcon } from './CalendarWeekIcon';
+export { Clock3 } from './Clock3';

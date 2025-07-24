@@ -34,6 +34,7 @@ export function PomodoroTimer({
     startTimer: startTimerBase,
     pauseTimer,
     resumeTimer: resumeTimerBase,
+    resetTimer,
   } = useTimer({
     selectedCategory,
     pomodoroCount,
@@ -76,6 +77,14 @@ export function PomodoroTimer({
           }
         },
       },
+      {
+        key: 'r',
+        handler: () => {
+          if (timerState === 'working' || timerState === 'break' || timerState === 'paused') {
+            resetTimer();
+          }
+        },
+      },
     ],
     isInitialized,
   );
@@ -111,6 +120,7 @@ export function PomodoroTimer({
           onStart={handleStart}
           onPause={pauseTimer}
           onResume={handleResume}
+          onReset={resetTimer}
         />
       </div>
     </div>

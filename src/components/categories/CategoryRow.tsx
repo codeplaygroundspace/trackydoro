@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Category, DayData } from '@/types';
 import { CategorySquare } from './CategorySquare';
 import { getDaysArray } from '@/lib/date-utils';
-import { formatWeekRange, getNextWeek, getPreviousWeek } from '@/lib/date-utils';
-import { EditIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/icons';
+import { EditIcon, TrashIcon } from '@/components/icons';
 
 interface CategoryRowProps {
   category: Category;
@@ -14,7 +12,6 @@ interface CategoryRowProps {
   onDelete: (category: Category) => void;
   isEditing: boolean;
   editForm?: React.ReactNode;
-  view: 'month' | 'week';
 }
 
 export function CategoryRow({
@@ -24,10 +21,8 @@ export function CategoryRow({
   onDelete,
   isEditing,
   editForm,
-  view,
 }: CategoryRowProps) {
-  const [currentWeekDate, setCurrentWeekDate] = useState(new Date());
-  const days = getDaysArray(view, currentWeekDate);
+  const days = getDaysArray();
   const today = new Date().toISOString().split('T')[0];
 
   const getDayData = (date: string) => {
@@ -73,7 +68,7 @@ export function CategoryRow({
                   }
                 }}
                 className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
-                aria-label={`Edit ${category.name} category`}
+                aria-label={`Edit ${category.name} project`}
                 tabIndex={0}
               >
                 <EditIcon className="w-4 h-4" />
@@ -87,7 +82,7 @@ export function CategoryRow({
                   }
                 }}
                 className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
-                aria-label={`Delete ${category.name} category`}
+                aria-label={`Delete ${category.name} project`}
                 tabIndex={0}
               >
                 <TrashIcon className="w-4 h-4" />
@@ -97,41 +92,7 @@ export function CategoryRow({
         )}
       </div>
 
-      {view === 'week' && (
-        <div className="flex items-center justify-between mb-2">
-          <button
-            onClick={() => setCurrentWeekDate(getPreviousWeek(currentWeekDate))}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setCurrentWeekDate(getPreviousWeek(currentWeekDate));
-              }
-            }}
-            className="p-1 hover:bg-secondary rounded transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
-            aria-label="Previous week"
-            tabIndex={0}
-          >
-            <ChevronLeftIcon className="w-4 h-4" />
-          </button>
-          <span className="text-sm font-medium">Week of {formatWeekRange(currentWeekDate)}</span>
-          <button
-            onClick={() => setCurrentWeekDate(getNextWeek(currentWeekDate))}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setCurrentWeekDate(getNextWeek(currentWeekDate));
-              }
-            }}
-            className="p-1 hover:bg-secondary rounded transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
-            aria-label="Next week"
-            tabIndex={0}
-          >
-            <ChevronRightIcon className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
-      <div className={`flex gap-2 mb-2 ${view === 'week' ? 'justify-between' : 'flex-wrap'}`}>
+      <div className="flex gap-2 mb-2 flex-wrap">
         {days.map((day) => {
           const { minutes, pomodoros } = getDayData(day);
 
@@ -143,7 +104,6 @@ export function CategoryRow({
               pomodoros={pomodoros}
               color={getSquareColor(day)}
               isToday={day === today}
-              size={view === 'week' ? 'large' : 'small'}
             />
           );
         })}

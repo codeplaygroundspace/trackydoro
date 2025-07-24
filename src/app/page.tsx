@@ -4,12 +4,11 @@ import { useState, useCallback } from 'react';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
 import { Modal, ConfirmDialog, KeyboardShortcuts } from '@/components/ui';
-import { ViewToggle } from '@/components/ui/ViewToggle';
 import { ThemeToggle } from '@/components/theme';
 import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useCategories, usePomodoroTracking } from '@/hooks';
 import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { OutlineKeyboard, PlusIcon } from '@/components/icons';
+import { OutlineKeyboard, PlusIcon, Clock3 } from '@/components/icons';
 import { Category } from '@/types';
 
 export default function Home() {
@@ -30,7 +29,6 @@ export default function Home() {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
-  const [view, setView] = useState<'month' | 'week'>('month');
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
   const handlePomodoroComplete = (categoryId: string) => {
@@ -109,11 +107,13 @@ export default function Home() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-black text-foreground dark:text-primary tracking-wide">
-            Trackydoro
-          </h1>
           <div className="flex items-center gap-2">
-            <ViewToggle view={view} onViewChange={setView} />
+            <Clock3 className="w-6 h-6 text-primary" />
+            <h1 className="text-2xl font-black text-foreground dark:text-primary tracking-wide">
+              Trackydoro
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
             <ThemeToggle />
             <button
               onClick={() => setShowKeyboardShortcuts(true)}
@@ -122,13 +122,6 @@ export default function Home() {
               title="Keyboard shortcuts (?)"
             >
               <OutlineKeyboard className="w-5 h-5 text-primary" />
-            </button>
-            <button
-              onClick={() => setShowAddCategory(true)}
-              className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-              aria-label="Add new category (Cmd/Ctrl+N)"
-            >
-              <PlusIcon className="w-5 h-5 text-primary" />
             </button>
           </div>
         </div>
@@ -148,13 +141,30 @@ export default function Home() {
               pomodoroCount={pomodoroCount}
             />
 
+            {/* Categories Section Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                Projects{' '}
+                {categories.length > 0 && (
+                  <span className="text-muted-foreground">({categories.length})</span>
+                )}
+              </h2>
+              <button
+                onClick={() => setShowAddCategory(true)}
+                className="flex items-center gap-2 bg-card hover:bg-card/70 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
+                aria-label="Add new category (Cmd/Ctrl+N)"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Add Project
+              </button>
+            </div>
+
             <CategoryGrid
               categories={categories}
               categoryData={categoryData}
               editingCategory={editingCategory}
               onEdit={setEditingCategory}
               onDelete={setDeletingCategory}
-              view={view}
               editForm={(category) => (
                 <CategoryForm
                   initialValues={category}
@@ -190,9 +200,9 @@ export default function Home() {
         )}
       </div>
 
-      {/* Add Category Modal */}
+      {/* Add Project Modal */}
       <Modal isOpen={showAddCategory} onClose={() => setShowAddCategory(false)}>
-        <h3 className="text-xl font-semibold mb-4">Add New Category</h3>
+        <h3 className="text-xl font-semibold mb-4">Add New Project</h3>
         <CategoryForm
           onSubmit={(name, color, target) => {
             addCategory(name, color, target);
@@ -207,8 +217,8 @@ export default function Home() {
         isOpen={!!deletingCategory}
         onClose={() => setDeletingCategory(null)}
         onConfirm={handleDeleteCategory}
-        title="Delete Category"
-        message={`Are you sure you want to delete "${deletingCategory?.name}"? This will remove all tracking data for this category and cannot be undone.`}
+        title="Delete Project"
+        message={`Are you sure you want to delete "${deletingCategory?.name}"? This will remove all tracking data for this project and cannot be undone.`}
         confirmText="Delete"
       />
 
