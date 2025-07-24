@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Link from 'next/link';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
 import { Modal, ConfirmDialog, KeyboardShortcuts } from '@/components/ui';
@@ -10,6 +11,8 @@ import { useCategories, usePomodoroTracking } from '@/hooks';
 import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { OutlineKeyboard, PlusIcon, Clock3 } from '@/components/icons';
 import { Category } from '@/types';
+import About from '@/components/About';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   const {
@@ -99,7 +102,8 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen text-foreground p-4 md:p-8 relative" role="main">
+    <>
+      <main className="min-h-screen text-foreground p-4 md:p-8 relative" role="main">
       {/* Gradient background */}
       <div className="fixed inset-0 bg-background">
         <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 via-transparent to-transparent" />
@@ -107,12 +111,12 @@ export default function Home() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Clock3 className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-black text-foreground dark:text-primary tracking-wide">
               Trackydoro
             </h1>
-          </div>
+          </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <button
@@ -196,6 +200,12 @@ export default function Home() {
               </div>
               <span>More</span>
             </div>
+
+            {/* About Section */}
+            <About />
+            
+            {/* Footer */}
+            <Footer />
           </>
         )}
       </div>
@@ -228,5 +238,6 @@ export default function Home() {
         onClose={() => setShowKeyboardShortcuts(false)}
       />
     </main>
+    </>
   );
 }
