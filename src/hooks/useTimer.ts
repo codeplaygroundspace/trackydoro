@@ -21,6 +21,7 @@ interface UseTimerReturn {
   pauseTimer: () => void;
   resumeTimer: () => void;
   resetTimer: () => void;
+  switchMode: (mode: 'pomodoro' | 'shortBreak' | 'longBreak') => void;
 }
 
 export function useTimer({
@@ -205,6 +206,31 @@ export function useTimer({
     clearSession();
   }, [clearSession]);
 
+  const switchMode = useCallback(
+    (mode: 'pomodoro' | 'shortBreak' | 'longBreak') => {
+      // Only allow switching when timer is idle
+      if (timerState !== 'idle') return;
+
+      clearSession();
+
+      switch (mode) {
+        case 'pomodoro':
+          setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
+          setSessionType('work');
+          break;
+        case 'shortBreak':
+          setTimeLeft(TIMER_CONSTANTS.SHORT_BREAK * 60);
+          setSessionType('break');
+          break;
+        case 'longBreak':
+          setTimeLeft(TIMER_CONSTANTS.LONG_BREAK * 60);
+          setSessionType('break');
+          break;
+      }
+    },
+    [timerState, clearSession],
+  );
+
   return {
     timeLeft,
     timerState,
@@ -215,5 +241,6 @@ export function useTimer({
     pauseTimer,
     resumeTimer,
     resetTimer,
+    switchMode,
   };
 }

@@ -35,6 +35,7 @@ export function PomodoroTimer({
     pauseTimer,
     resumeTimer: resumeTimerBase,
     resetTimer,
+    switchMode,
   } = useTimer({
     selectedCategory,
     pomodoroCount,
@@ -109,7 +110,12 @@ export function PomodoroTimer({
   return (
     <div className="bg-card rounded-2xl py-8 px-12 mb-8 shadow-2xl border border-border">
       <div className="text-center">
-        <TimerDisplay timeLeft={timeLeft} timerState={timerState} sessionType={sessionType} />
+        <TimerDisplay
+          timeLeft={timeLeft}
+          timerState={timerState}
+          sessionType={sessionType}
+          switchMode={switchMode}
+        />
 
         <TimerControls
           categories={categories}
