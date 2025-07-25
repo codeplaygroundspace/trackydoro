@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import './fonts/martian-grotesk.css';
 
 :root {
   /* Tailwind Sky Scale */
@@ -122,21 +121,6 @@
   }
 }
 
-body {
-  font-family:
-    'Martian Grotesk',
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    sans-serif;
-}
-
 @theme inline {
   /* Use OKLCH colors directly for Tailwind */
   --color-background: var(--background);
@@ -160,9 +144,6 @@ body {
   --color-ring: var(--ring);
   --color-sky-700: var(--sky-700);
 
-  --font-sans:
-    'Martian Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 }
@@ -173,7 +154,6 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: var(--font-sans);
 }
 
 /* Smooth transitions for theme switching */
