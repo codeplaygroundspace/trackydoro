@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { CategoryGrid, CategoryForm } from '@/components/categories';
 import { Modal, ConfirmDialog, KeyboardShortcuts } from '@/components/ui';
 import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
-import { useCategories, usePomodoroTracking } from '@/hooks';
+import { useStore } from '@/hooks/useStore';
 import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { PlusIcon } from '@/components/icons';
 import AppHeader from '@/components/AppHeader';
@@ -14,28 +14,38 @@ import About from '@/components/About';
 import Footer from '@/components/Footer';
 
 export default function Home() {
-  const {
-    categories,
-    categoryData,
-    selectedCategory,
-    setSelectedCategory,
-    addCategory,
-    updateCategory,
-    deleteCategory,
-    recordPomodoro,
-    isLoading,
-  } = useCategories();
-
-  const { pomodoroCount, incrementPomodoro } = usePomodoroTracking();
+  // Get state and actions from Zustand store
+  const categories = useStore((state) => state.categories);
+  const categoryData = useStore((state) => state.categoryData);
+  const selectedCategory = useStore((state) => state.selectedCategory);
+  const setSelectedCategory = useStore((state) => state.setSelectedCategory);
+  const addCategory = useStore((state) => state.addCategory);
+  const updateCategory = useStore((state) => state.updateCategory);
+  const deleteCategory = useStore((state) => state.deleteCategory);
+  const recordPomodoro = useStore((state) => state.recordPomodoro);
+  const pomodoroCount = useStore((state) => state.pomodoroCount);
+  const incrementPomodoroCount = useStore((state) => state.incrementPomodoroCount);
+  const isLoading = useStore((state) => state.isLoading);
+  const setLoading = useStore((state) => state.setLoading);
 
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
+  // Simulate initial loading
+  useEffect(() => {
+    setLoading(true);
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [setLoading]);
+
   const handlePomodoroComplete = (categoryId: string) => {
     recordPomodoro(categoryId);
-    incrementPomodoro();
+    incrementPomodoroCount();
   };
 
   const handleDeleteCategory = () => {
