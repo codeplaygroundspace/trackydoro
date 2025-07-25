@@ -1,6 +1,30 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/theme';
 import './globals.css';
+import localFont from 'next/font/local';
+
+// Add fonts following Nextjs documentation
+const martianGrotesk = localFont({
+  src: [
+    {
+      path: './fonts/MartianGrotesk-VFVF.woff2',
+      weight: '100 900',
+      style: 'normal',
+    },
+    {
+      path: './fonts/MartianGrotesk-StdRg.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/MartianGrotesk-StdBd.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-martian',
+  fallback: ['ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+});
 
 export const viewport = {
   width: 'device-width',
@@ -72,7 +96,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={martianGrotesk.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
@@ -92,7 +116,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased">
+      <body className={`${martianGrotesk.className} antialiased`}>
         <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>
       </body>
     </html>
