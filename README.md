@@ -9,8 +9,6 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 
 ## ✨ Features
 
-### Core Features
-
 - 🍅 **Pomodoro Timer**: Stay focused with 25-minute work sessions and smart break intervals
 - 📊 **Visual Progress Tracking**: GitHub-style activity squares show your daily progress at a glance
 - 🎯 **Category Management**: Track different activities with custom categories, colors, and daily targets
