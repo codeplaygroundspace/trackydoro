@@ -9,7 +9,7 @@ interface PomodoroStore {
   selectedCategory: string;
   pomodoroCount: number;
   isLoading: boolean;
-  
+
   // Actions
   addCategory: (name: string, color: string, target: number) => void;
   updateCategory: (id: string, name: string, color: string, target: number) => void;
@@ -36,7 +36,7 @@ export const useStore = create<PomodoroStore>()(
       selectedCategory: '',
       pomodoroCount: 0,
       isLoading: false,
-      
+
       // Actions
       addCategory: (name, color, target) => {
         const newCategory: Category = {
@@ -45,31 +45,31 @@ export const useStore = create<PomodoroStore>()(
           color,
           target,
         };
-        
+
         set((state) => ({
           categories: [...state.categories, newCategory],
           selectedCategory: state.categories.length === 0 ? newCategory.id : state.selectedCategory,
         }));
       },
-      
+
       updateCategory: (id, name, color, target) => {
         set((state) => ({
           categories: state.categories.map((cat) =>
-            cat.id === id ? { ...cat, name, color, target } : cat
+            cat.id === id ? { ...cat, name, color, target } : cat,
           ),
         }));
       },
-      
+
       deleteCategory: (id) => {
         set((state) => {
           const newCategories = state.categories.filter((cat) => cat.id !== id);
           const newCategoryData = state.categoryData.filter((data) => data.categoryId !== id);
-          
+
           let newSelectedCategory = state.selectedCategory;
           if (state.selectedCategory === id && newCategories.length > 0) {
             newSelectedCategory = newCategories[0].id;
           }
-          
+
           return {
             categories: newCategories,
             categoryData: newCategoryData,
@@ -77,16 +77,16 @@ export const useStore = create<PomodoroStore>()(
           };
         });
       },
-      
+
       setSelectedCategory: (id) => set({ selectedCategory: id }),
-      
+
       recordPomodoro: (categoryId) => {
         const today = new Date().toISOString().split('T')[0];
-        
+
         set((state) => {
           const updatedData = [...state.categoryData];
           const categoryIndex = updatedData.findIndex((c) => c.categoryId === categoryId);
-          
+
           if (categoryIndex === -1) {
             updatedData.push({
               categoryId,
@@ -105,19 +105,19 @@ export const useStore = create<PomodoroStore>()(
               updatedData[categoryIndex].days[dayIndex].pomodoros += 1;
             }
           }
-          
+
           return { categoryData: updatedData };
         });
       },
-      
+
       incrementPomodoroCount: () => {
         set((state) => ({ pomodoroCount: state.pomodoroCount + 1 }));
       },
-      
+
       setLoading: (loading) => set({ isLoading: loading }),
     }),
     {
       name: 'pomodoro-storage',
-    }
-  )
+    },
+  ),
 );

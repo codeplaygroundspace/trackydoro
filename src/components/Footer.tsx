@@ -5,12 +5,12 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-6">
             <a
-              href="https://www.rosinapissaco.com/"
+              href="https://github.com/codeplaygroundspace/trackydoro"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              Author
+              Contribute
             </a>
             <a href="/privacy" className="hover:text-foreground transition-colors">
               Privacy
@@ -20,7 +20,7 @@ const Footer = () => {
             </a>
           </div>
           <div className="flex items-center gap-2">
-            <span>©Trackydoro 2025. All Rights Reserved.</span>
+            <span>©Trackydoro 2025</span>
           </div>
         </div>
       </div>
