@@ -3,6 +3,7 @@
 ## 📦 What is a Store?
 
 Think of a store as a **container** that holds:
+
 - **State** = Your app's data (like a box of variables)
 - **Actions** = Functions that change the data (like buttons)
 
@@ -24,11 +25,11 @@ isLoading: boolean;           // Is the app loading?
 Actions are functions that **change the state**. Think of them as "verbs" - things you can DO:
 
 ```typescript
-addCategory()      // CREATE a new project
-updateCategory()   // EDIT a project
-deleteCategory()   // DELETE a project
-setSelectedCategory() // SWITCH active project
-recordPomodoro()   // SAVE completed pomodoro
+addCategory(); // CREATE a new project
+updateCategory(); // EDIT a project
+deleteCategory(); // DELETE a project
+setSelectedCategory(); // SWITCH active project
+recordPomodoro(); // SAVE completed pomodoro
 ```
 
 ## 🔧 How Actions Work
@@ -39,21 +40,22 @@ Let's look at the `addCategory` action:
 addCategory: (name, color, target) => {
   // 1. Create new category object
   const newCategory: Category = {
-    id: Date.now().toString(),  // Unique ID from timestamp
-    name,                       // "Study"
-    color,                      // "#3b82f6"
-    target,                     // 90 minutes
+    id: Date.now().toString(), // Unique ID from timestamp
+    name, // "Study"
+    color, // "#3b82f6"
+    target, // 90 minutes
   };
-  
+
   // 2. Update the state
   set((state) => ({
-    categories: [...state.categories, newCategory],  // Add to array
+    categories: [...state.categories, newCategory], // Add to array
     selectedCategory: state.categories.length === 0 ? newCategory.id : state.selectedCategory,
   }));
-}
+};
 ```
 
 **What `set()` does:**
+
 - Takes the current state
 - Returns new state
 - Zustand automatically updates your components!
@@ -90,6 +92,7 @@ export const useStore = create<PomodoroStore>()(
 ```
 
 This automatically:
+
 - Saves your state to `localStorage['pomodoro-storage']`
 - Loads it when app starts
 - No manual saving needed!
@@ -135,10 +138,10 @@ const store = useStore();
 
 ## 🎯 Benefits Over useState
 
-| useState | Zustand |
-|----------|---------|
-| Local to component | Global state |
+| useState            | Zustand                |
+| ------------------- | ---------------------- |
+| Local to component  | Global state           |
 | Manual prop passing | Direct access anywhere |
-| No persistence | Auto localStorage save |
-| Multiple hooks | One central store |
-| Props drilling | Import and use |
+| No persistence      | Auto localStorage save |
+| Multiple hooks      | One central store      |
+| Props drilling      | Import and use         |

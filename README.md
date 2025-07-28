@@ -7,13 +7,17 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 ![Next.js](https://img.shields.io/badge/Next.js-15.4.2-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
+![Trackydoro Screenshot](screenshot.png)
+
 ## ✨ Features
 
-- 🍅 **Pomodoro Timer**: Stay focused with 25-minute work sessions and smart break intervals
-- 📊 **Visual Progress Tracking**: GitHub-style activity squares show your daily progress at a glance
-- 🎯 **Category Management**: Track different activities with custom categories, colors, and daily targets
+- 🍅 **Pomodoro Timer**: Stay focused with 25-minute work sessions and break intervals
+- 📊 **Visual Progress Tracking**: GitHub-style activity squares show your daily progress
 - 🔄 **Session Persistence**: Resume your timer exactly where you left off, even after closing the browser
-- 📱 **Responsive Design**: Seamless experience across desktop, tablet, and mobile devices
+- 🎯 **Category management**
+- 📱 **Responsive Design**
+- 🌓 **Theme System**: Beautiful light and dark themes with smooth transitions
+- 🎨 **Custom Colors**: Personalise categories with your preferred colors
 
 ### Timer Features
 
@@ -23,66 +27,6 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 - 🔊 Audio notifications for session completion
 - ⏸️ Pause/Resume functionality
 - 🔄 Session state persistence across page reloads
-
-### Visual Features
-
-- 🌓 **Theme System**: Beautiful light and dark themes with smooth transitions
-- 📅 **View Modes**: Toggle between month and week views for progress tracking
-- 🎨 **Custom Colors**: Personalize categories with your preferred colors
-- ✨ **Loading States**: Smooth skeleton loaders for better UX
-- 🎯 **Progress Indicators**: Visual feedback for daily target achievement
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18.17 or later
-- Bun (recommended) or npm, yarn, pnpm
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/trackydoro.git
-cd trackydoro
-```
-
-2. Install dependencies:
-
-```bash
-bun install
-```
-
-3. Run the development server:
-
-```bash
-bun run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## 🎨 Theme System
-
-Trackydoro features a sophisticated theme system with carefully crafted light and dark modes:
-
-### Dark Theme
-
-- Deep blue background with warm yellow accents
-- High contrast for reduced eye strain
-- Vibrant colors that pop against the dark background
-
-### Light Theme
-
-- Clean, minimal design with strong contrast
-- Pure white cards on subtle gray background
-- Professional color palette optimized for readability
-
-### Features
-
-- 🔄 **Automatic switching** based on system preference
-- 🎨 **CSS variables** for consistent theming
-- ✨ **OKLCH color space** for perceptually uniform colors
 
 ## 📝 Available Scripts
 
@@ -103,45 +47,7 @@ bun run format:check # Check code formatting
 - **[TypeScript 5](https://www.typescriptlang.org/)** - Type-safe development
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Modern utility-first CSS
 - **[date-fns](https://date-fns.org/)** - Modern JavaScript date utility library
-
-## 📁 Project Structure
-
-```
-trackydoro/
-├── src/
-│   ├── app/                    # Next.js app router
-│   │   ├── layout.tsx         # Root layout with providers
-│   │   ├── page.tsx           # Main application page
-│   │   └── globals.css        # Global styles & theme
-│   ├── components/
-│   │   ├── categories/        # Category tracking components
-│   │   │   ├── CategoryGrid.tsx
-│   │   │   ├── CategoryRow.tsx
-│   │   │   └── CategorySquare.tsx
-│   │   ├── pomodoro/          # Timer components
-│   │   │   ├── PomodoroTimer.tsx
-│   │   │   ├── TimerDisplay.tsx
-│   │   │   └── TimerControls.tsx
-│   │   ├── theme/             # Theme system
-│   │   │   ├── ThemeProvider.tsx
-│   │   │   └── ThemeToggle.tsx
-│   │   └── ui/                # Reusable UI components
-│   │       ├── Modal.tsx
-│   │       ├── LoadingSkeleton.tsx
-│   │       └── ViewToggle.tsx
-│   ├── hooks/                 # Custom React hooks
-│   │   ├── useTimer.ts        # Timer logic
-│   │   ├── useAudio.ts        # Sound management
-│   │   ├── useCategories.ts   # Category state
-│   │   └── useLocalStorage.ts # Persistence
-│   ├── lib/                   # Utilities
-│   │   └── date-utils.ts      # Date formatting
-│   └── types/                 # TypeScript types
-│       └── index.ts           # Type definitions
-├── public/
-│   └── sounds/                # Audio files
-└── package.json
-```
+- **[Zustand](https://zustand-demo.pmnd.rs/)** - A small, fast and scalable bearbones state-management solution
 
 ### Manual Deployment
 
@@ -169,6 +75,30 @@ Trackydoro uses browser localStorage to persist:
 - Categories and their settings
 - Daily progress and statistics
 - Theme preference
-- View preferences
 
-No data is sent to external servers, ensuring complete privacy.
+## 🤝 Contributing
+
+We love your input! We want to make contributing to Trackydoro as easy and transparent as possible, whether it's:
+
+- 🐛 Reporting a bug
+- 💡 Discussing the current state of the code
+- 🔧 Submitting a fix
+- 🚀 Proposing new features
+- 👩‍💻 Becoming a maintainer
+
+### Reporting Bugs
+
+We welcome your feedback. Use the /bug command to report issues directly within Trackydoro, or file a [GitHub issue](https://github.com/codeplaygroundspace/trackydoro/issues).
+
+### Development process
+
+- Fork the repo and create your branch from main
+- If you've added code that should be tested, add tests
+- If you've changed APIs, update the documentation
+- Ensure the test suite passes
+- Make sure your code lints
+- Issue that pull request!
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
