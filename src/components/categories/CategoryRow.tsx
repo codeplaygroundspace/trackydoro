@@ -2,7 +2,7 @@
 
 import { Category, DayData } from '@/types';
 import { CategorySquare } from './CategorySquare';
-import { getDaysArray } from '@/lib/date-utils';
+import { getDaysArray, formatMinutes } from '@/lib/date-utils';
 import { EditIcon, TrashIcon } from '@/components/icons';
 
 interface CategoryRowProps {
@@ -110,7 +110,7 @@ export function CategoryRow({
       </div>
 
       <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span>Target: {category.target} min/day</span>
+        <span>Target: {formatMinutes(category.target)}/day</span>
         <span>{getTodayProgress()}% of target</span>
       </div>
     </div>

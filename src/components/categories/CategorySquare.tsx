@@ -1,6 +1,6 @@
 'use client';
 
-import { getDateDisplay } from '@/lib/date-utils';
+import { getDateDisplay, formatMinutes } from '@/lib/date-utils';
 
 interface CategorySquareProps {
   date: string;
@@ -31,7 +31,7 @@ export function CategorySquare({ date, minutes, pomodoros, color, isToday }: Cat
       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-10 border border-border">
         <div className="font-semibold">{getDateDisplay(date)}</div>
         <div>
-          {minutes} min / {pomodoros} 🍅
+          {formatMinutes(minutes)} / {pomodoros} 🍅
         </div>
       </div>
     </div>
