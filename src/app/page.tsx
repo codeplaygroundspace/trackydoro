@@ -194,8 +194,13 @@ export default function Home() {
           isOpen={!!deletingCategory}
           onClose={() => setDeletingCategory(null)}
           onConfirm={handleDeleteCategory}
-          title="Delete Project"
-          message={`Are you sure you want to delete "${deletingCategory?.name}"? This will remove all tracking data for this project and cannot be undone.`}
+          title={`Delete "${deletingCategory?.name}" project?`}
+          message={
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-muted-foreground">
+              <li>This cannot be undone</li>
+              <li>Deletion will remove all tracking data for this project</li>
+            </ul>
+          }
           confirmText="Delete"
         />
 

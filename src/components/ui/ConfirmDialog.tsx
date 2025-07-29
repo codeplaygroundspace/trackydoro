@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { Modal } from './Modal';
 
 interface ConfirmDialogProps {
@@ -7,7 +8,7 @@ interface ConfirmDialogProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
-  message: string;
+  message: ReactNode;
   confirmText?: string;
   cancelText?: string;
   confirmClassName?: string;
@@ -19,14 +20,14 @@ export function ConfirmDialog({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
+  confirmText = 'Delete',
   cancelText = 'Cancel',
   confirmClassName = 'bg-destructive hover:bg-destructive/90 text-destructive-foreground',
 }: ConfirmDialogProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
-      <p className="text-muted-foreground mb-6">{message}</p>
+      <div className="text-muted-foreground mb-6">{message}</div>
       <div className="flex gap-3 justify-end">
         <button
           onClick={onClose}
