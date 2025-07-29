@@ -197,7 +197,7 @@ export default function Home() {
           title={`Delete "${deletingCategory?.name}" project?`}
           message={
             <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-muted-foreground">
-              <li>This cannot be undone</li>
+              <li>This cannot be undone.</li>
               <li>Deletion will remove all tracking data for this project</li>
             </ul>
           }
