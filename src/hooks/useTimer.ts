@@ -1,5 +1,20 @@
 'use client';
 
+/**
+ * Manages the core logic and state for the Pomodoro timer.
+ *
+ * This hook acts as a self-contained state machine for the timer, handling
+ * the countdown, state transitions (idle, working, paused, break), and session
+ * type (work or break).
+ *
+ * It uses its own local state and leverages the `useTimerPersistence` hook
+ * to save and load the timer's session to and from localStorage, ensuring
+ * the state survives page reloads.
+ *
+ * Note: This hook is intentionally kept separate from the global Zustand store
+ * to encapsulate the timer's high-frequency updates and local UI state.
+ */
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TimerState, TIMER_CONSTANTS } from '@/types';
 import { useTimerPersistence } from './useTimerPersistence';

@@ -5,8 +5,10 @@ import { Category } from '@/types';
 import { useTimer } from '@/hooks/useTimer';
 import { useAudio } from '@/hooks/useAudio';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { usePomodoroStyles } from '@/hooks/usePomodoroStyles'; // Import the new hook
 import { TimerDisplay } from './TimerDisplay';
 import { TimerControls } from './TimerControls';
+import { cn } from '@/lib/utils'; // Import the utility for conditional classes
 
 interface PomodoroTimerProps {
   categories: Category[];
@@ -42,6 +44,9 @@ export function PomodoroTimer({
     onPomodoroComplete,
     onTimerComplete: () => playSound('complete'),
   });
+
+  // Get dynamic styles based on the session type
+  const { cardClasses } = usePomodoroStyles(sessionType);
 
   // Load saved category on initialization
   useEffect(() => {
@@ -92,7 +97,7 @@ export function PomodoroTimer({
 
   if (!isInitialized) {
     return (
-      <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl border border-border">
+      <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl">
         <div className="text-center">
           <div className="animate-pulse">
             <div className="w-48 h-24 bg-muted rounded-lg mx-auto mb-8" />
@@ -108,8 +113,13 @@ export function PomodoroTimer({
   }
 
   return (
-    <div className="bg-card rounded-2xl py-8 px-12 mb-8 shadow-2xl border border-border">
-      <div className="text-center">
+    <div
+      className={cn(
+        'rounded-2xl py-8 px-12 mb-8 shadow-2xl transition-colors duration-500',
+        cardClasses,
+      )}
+    >
+      <div className={cn('text-center')}>
         <TimerDisplay
           timeLeft={timeLeft}
           timerState={timerState}
