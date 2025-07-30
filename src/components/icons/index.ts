@@ -4,6 +4,7 @@ export { MoonIcon } from './MoonIcon';
 export { PlusIcon } from './PlusIcon';
 export { EditIcon } from './EditIcon';
 export { TrashIcon } from './TrashIcon';
+export { GearIcon } from './GearIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
 export { Clock3 } from './Clock3';
