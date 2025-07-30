@@ -1,5 +1,10 @@
 'use client';
 
+/**
+ * A UI component that renders the interactive controls for the Pomodoro timer.
+ * This component is responsible for displaying the category selection dropdown + the primary action buttons (Start, Pause, Resume, Reset).
+ */
+
 import { Category, TimerState } from '@/types';
 
 interface TimerControlsProps {
@@ -32,7 +37,9 @@ export function TimerControls({
           value={selectedCategory || ''}
           onChange={(e) => onCategoryChange(e.target.value)}
           disabled={timerState !== 'idle'}
-          className="bg-secondary text-secondary-foreground px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 w-64 h-12 font-semibold"
+          className={
+            'bg-secondary text-secondary-foreground px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 w-64 h-12 font-semibold'
+          }
           aria-label="Select project for timer"
         >
           <option value="" disabled>
@@ -53,7 +60,9 @@ export function TimerControls({
           <button
             onClick={onStart}
             disabled={!selectedCategory}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-64 h-12"
+            className={
+              'bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-64 h-12'
+            }
             aria-label="Start timer (Spacebar)"
           >
             Start
@@ -63,7 +72,9 @@ export function TimerControls({
         {(timerState === 'working' || timerState === 'break') && (
           <button
             onClick={onPause}
-            className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12"
+            className={
+              'bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12'
+            }
             aria-label="Pause timer (Spacebar)"
           >
             Pause
@@ -73,7 +84,9 @@ export function TimerControls({
         {timerState === 'paused' && (
           <button
             onClick={onResume}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12"
+            className={
+              'bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12'
+            }
             aria-label="Resume timer (Spacebar)"
           >
             Resume
@@ -83,7 +96,9 @@ export function TimerControls({
         {(timerState === 'working' || timerState === 'break' || timerState === 'paused') && (
           <button
             onClick={onReset}
-            className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors cursor-pointer"
+            className={
+              'text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors cursor-pointer'
+            }
             aria-label="Reset timer"
           >
             Reset

@@ -1,3 +1,18 @@
+/**
+ * Defines the global Zustand store for the application.
+ *
+ * This store serves as the single source of truth for shared application state
+ * that needs to be accessed by multiple, often unrelated, components. It
+ * handles state related to categories, user progress data, and selections.
+ *
+ * It uses the `persist` middleware from Zustand to automatically save the
+ * store's state to `localStorage`, ensuring data persistence across browser
+ * sessions.
+ *
+ * State that is local to a specific component or feature (e.g., the active
+ * timer's second-by-second countdown) is intentionally kept out of this store
+ * to optimize performance and maintain a clear separation of concerns.
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Category, CategoryData, TIMER_CONSTANTS } from '@/types';

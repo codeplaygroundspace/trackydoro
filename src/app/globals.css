@@ -23,6 +23,10 @@
 
   /* Tailwind Blue Scale (for primary) */
   --blue-500: oklch(60.16% 0.24 265.52);
+
+  /* Pomodoro card specific colors */
+  --pomodoro-red-bg: oklch(62.17% 0.197 11.3 / 0.4);
+  --pomodoro-green-bg: oklch(70.3% 0.156 142.5 / 0.4);
 }
 
 /* Light Theme - High contrast and vibrant */
@@ -87,6 +91,10 @@
   --border: var(--sky-300);
   --input: var(--sky-700);
   --ring: var(--yellow-400);
+
+  /* Pomodoro card specific colors (Dark Theme) */
+  --pomodoro-red-bg-dark: oklch(55.06% 0.212 11.3 / 0.5);
+  --pomodoro-green-bg-dark: oklch(63% 0.169 142.5 / 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -144,12 +152,14 @@
   --color-ring: var(--ring);
   --color-sky-700: var(--sky-700);
 
+  /* Pomodoro Specific Mappings */
+  --color-pomodoro-red-bg: var(--pomodoro-red-bg);
+  --color-pomodoro-green-bg: var(--pomodoro-green-bg);
+  --color-pomodoro-red-bg-dark: var(--pomodoro-red-bg-dark);
+  --color-pomodoro-green-bg-dark: var(--pomodoro-green-bg-dark);
+
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
-}
-
-* {
-  @apply border-border;
 }
 
 body {
