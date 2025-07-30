@@ -8,6 +8,7 @@ import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkel
 import { useStore } from '@/hooks/useStore';
 import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { PlusIcon } from '@/components/icons';
+import { Settings } from '@/components/Settings';
 import AppHeader from '@/components/AppHeader';
 import { Category } from '@/types';
 import About from '@/components/About';
@@ -32,6 +33,7 @@ export default function Home() {
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   // Simulate initial loading
   useEffect(() => {
@@ -97,6 +99,10 @@ export default function Home() {
         key: '?',
         handler: () => setShowKeyboardShortcuts(true),
       },
+      {
+        key: 's',
+        handler: () => setShowSettings(true),
+      },
       // Number keys for quick category selection
       ...Array.from({ length: 9 }, (_, i) => ({
         key: String(i + 1),
@@ -119,7 +125,10 @@ export default function Home() {
         </div>
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Header */}
-          <AppHeader onKeyboardClick={() => setShowKeyboardShortcuts(true)} />
+          <AppHeader
+            onKeyboardClick={() => setShowKeyboardShortcuts(true)}
+            onSettingsClick={() => setShowSettings(true)}
+          />
 
           {isLoading ? (
             <>
@@ -204,11 +213,15 @@ export default function Home() {
           confirmText="Delete"
         />
 
-        {/* Keyboard Shortcuts Help */}
-        <KeyboardShortcuts
-          isOpen={showKeyboardShortcuts}
-          onClose={() => setShowKeyboardShortcuts(false)}
-        />
+        {/* Keyboard modal */}
+        <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
+          <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
+        </Modal>
+
+        {/* Settings modal */}
+        <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
+          <Settings onClose={() => setShowSettings(false)} />
+        </Modal>
       </main>
     </>
   );
