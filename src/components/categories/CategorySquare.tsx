@@ -1,6 +1,6 @@
 'use client';
 
-import { formatMinutes,getDateDisplay } from '@/lib/date-utils';
+import { formatMinutes, getDateDisplay } from '@/lib/date-utils';
 
 interface CategorySquareProps {
   date: string;
