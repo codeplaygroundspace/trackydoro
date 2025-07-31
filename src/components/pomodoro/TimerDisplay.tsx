@@ -71,8 +71,8 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
               currentMode === 'pomodoro'
-                ? 'bg-secondary text-secondary-foreground'
-                : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
+                ? 'bg-secondary/50 text-secondary-foreground'
+                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
             aria-label="Switch to Pomodoro mode"
@@ -85,8 +85,8 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
               currentMode === 'shortBreak'
-                ? 'bg-secondary text-secondary-foreground'
-                : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
+                ? 'bg-secondary/50 text-secondary-foreground'
+                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
             aria-label="Switch to Short Break mode"
@@ -99,8 +99,8 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
               currentMode === 'longBreak'
-                ? 'bg-secondary text-secondary-foreground'
-                : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
+                ? 'bg-secondary/50 text-secondary-foreground'
+                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
             aria-label="Switch to Long Break mode"
