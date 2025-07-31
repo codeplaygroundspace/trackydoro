@@ -15,7 +15,10 @@
  */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Category, CategoryData, TIMER_CONSTANTS } from '@/types';
+
+import { COLORS } from '@/lib/constants';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { Category, CategoryData } from '@/types';
 
 interface PomodoroStore {
   // State
@@ -36,10 +39,10 @@ interface PomodoroStore {
 }
 
 const DEFAULT_CATEGORIES: Category[] = [
-  { id: '1', name: 'Study', color: '#3b82f6', target: 90 },
-  { id: '2', name: 'Work', color: '#8b5cf6', target: 120 },
-  { id: '3', name: 'Exercise', color: '#10b981', target: 60 },
-  { id: '4', name: 'Reading', color: '#f59e0b', target: 30 },
+  { id: '1', name: 'Study', color: COLORS[1], target: 90 },
+  { id: '2', name: 'Work', color: COLORS[2], target: 120 },
+  { id: '3', name: 'Exercise', color: COLORS[0], target: 60 },
+  { id: '4', name: 'Reading', color: COLORS[3], target: 30 },
 ];
 
 export const useStore = create<PomodoroStore>()(
@@ -97,6 +100,7 @@ export const useStore = create<PomodoroStore>()(
 
       recordPomodoro: (categoryId) => {
         const today = new Date().toISOString().split('T')[0];
+        const { pomodoro } = useSettingsStore.getState();
 
         set((state) => {
           const updatedData = [...state.categoryData];
@@ -105,18 +109,18 @@ export const useStore = create<PomodoroStore>()(
           if (categoryIndex === -1) {
             updatedData.push({
               categoryId,
-              days: [{ date: today, minutes: TIMER_CONSTANTS.WORK_MINUTES, pomodoros: 1 }],
+              days: [{ date: today, minutes: pomodoro, pomodoros: 1 }],
             });
           } else {
             const dayIndex = updatedData[categoryIndex].days.findIndex((d) => d.date === today);
             if (dayIndex === -1) {
               updatedData[categoryIndex].days.push({
                 date: today,
-                minutes: TIMER_CONSTANTS.WORK_MINUTES,
+                minutes: pomodoro,
                 pomodoros: 1,
               });
             } else {
-              updatedData[categoryIndex].days[dayIndex].minutes += TIMER_CONSTANTS.WORK_MINUTES;
+              updatedData[categoryIndex].days[dayIndex].minutes += pomodoro;
               updatedData[categoryIndex].days[dayIndex].pomodoros += 1;
             }
           }

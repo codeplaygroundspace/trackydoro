@@ -1,9 +1,10 @@
 'use client';
 
-import { Category, DayData } from '@/types';
-import { CategorySquare } from './CategorySquare';
-import { getDaysArray, formatMinutes } from '@/lib/date-utils';
 import { EditIcon, TrashIcon } from '@/components/icons';
+import { formatMinutes,getDaysArray } from '@/lib/date-utils';
+import { Category, DayData } from '@/types';
+
+import { CategorySquare } from './CategorySquare';
 
 interface CategoryRowProps {
   category: Category;

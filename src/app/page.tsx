@@ -1,18 +1,19 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
-import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
-import { CategoryGrid, CategoryForm } from '@/components/categories';
-import { Modal, ConfirmDialog, KeyboardShortcuts } from '@/components/ui';
-import { TimerSkeleton, CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
-import { useStore } from '@/hooks/useStore';
-import { useKeyboardShortcuts, useGlobalKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { PlusIcon } from '@/components/icons';
-import { Settings } from '@/components/Settings';
-import AppHeader from '@/components/AppHeader';
-import { Category } from '@/types';
+import { useCallback, useEffect,useState } from 'react';
+
 import About from '@/components/About';
+import AppHeader from '@/components/AppHeader';
+import { CategoryForm,CategoryGrid } from '@/components/categories';
 import Footer from '@/components/Footer';
+import { PlusIcon } from '@/components/icons';
+import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
+import { Settings } from '@/components/Settings';
+import { ConfirmDialog, KeyboardShortcuts,Modal } from '@/components/ui';
+import { CategoryGridSkeleton,TimerSkeleton } from '@/components/ui/LoadingSkeleton';
+import { useGlobalKeyboardShortcuts,useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useStore } from '@/hooks/useStore';
+import { Category } from '@/types';
 
 export default function Home() {
   // Get state and actions from Zustand store

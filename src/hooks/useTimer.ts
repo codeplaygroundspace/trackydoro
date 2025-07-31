@@ -4,19 +4,23 @@
  * Manages the core logic and state for the Pomodoro timer.
  *
  * This hook acts as a self-contained state machine for the timer, handling
- * the countdown, state transitions (idle, working, paused, break), and session
- * type (work or break).
+ * the countdown, state transitions (TimerState), and the current timer mode
+ * (TimerMode: pomodoro, shortBreak, longBreak).
  *
- * It uses its own local state and leverages the `useTimerPersistence` hook
- * to save and load the timer's session to and from localStorage, ensuring
- * the state survives page reloads.
+ * It pulls timer durations from the global `useSettingsStore` to allow for
+ * user customization, and leverages the `useTimerPersistence` hook to save
+ * and load the active timer session to and from localStorage.
  *
- * Note: This hook is intentionally kept separate from the global Zustand store
- * to encapsulate the timer's high-frequency updates and local UI state.
+ * Note: While settings are sourced globally, this hook encapsulates the
+ * timer's high-frequency state changes (e.g., the second-by-second countdown)
+ * to keep them local and optimize performance.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { TimerState, TIMER_CONSTANTS } from '@/types';
+import { useCallback,useEffect, useRef, useState } from 'react';
+
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { TimerMode,TimerState } from '@/types';
+
 import { useTimerPersistence } from './useTimerPersistence';
 
 interface UseTimerProps {
@@ -29,14 +33,14 @@ interface UseTimerProps {
 interface UseTimerReturn {
   timeLeft: number;
   timerState: TimerState;
-  sessionType: 'work' | 'break';
+  currentMode: TimerMode;
   isInitialized: boolean;
   savedCategory?: string;
   startTimer: () => void;
   pauseTimer: () => void;
   resumeTimer: () => void;
   resetTimer: () => void;
-  switchMode: (mode: 'pomodoro' | 'shortBreak' | 'longBreak') => void;
+  switchMode: (mode: TimerMode) => void;
 }
 
 export function useTimer({
@@ -45,10 +49,12 @@ export function useTimer({
   onPomodoroComplete,
   onTimerComplete,
 }: UseTimerProps): UseTimerReturn {
-  const [timeLeft, setTimeLeft] = useState(TIMER_CONSTANTS.WORK_MINUTES * 60);
+  const { pomodoro, shortBreak, longBreak } = useSettingsStore();
+
+  const [timeLeft, setTimeLeft] = useState(pomodoro * 60);
   const [timerState, setTimerState] = useState<TimerState>('idle');
+  const [currentMode, setCurrentMode] = useState<TimerMode>('pomodoro');
   const [isInitialized, setIsInitialized] = useState(false);
-  const [sessionType, setSessionType] = useState<'work' | 'break'>('work');
   const [savedCategory, setSavedCategory] = useState<string | undefined>();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,11 +66,28 @@ export function useTimer({
     if (savedSession) {
       setTimeLeft(savedSession.timeLeft);
       setTimerState(savedSession.timerState);
-      setSessionType(savedSession.sessionType || 'work');
+      setCurrentMode(savedSession.currentMode || 'pomodoro');
       setSavedCategory(savedSession.selectedCategory);
     }
     setIsInitialized(true);
   }, [loadSession]);
+
+  // Effect to update timer when settings change
+  useEffect(() => {
+    if (timerState === 'idle') {
+      switch (currentMode) {
+        case 'pomodoro':
+          setTimeLeft(pomodoro * 60);
+          break;
+        case 'shortBreak':
+          setTimeLeft(shortBreak * 60);
+          break;
+        case 'longBreak':
+          setTimeLeft(longBreak * 60);
+          break;
+      }
+    }
+  }, [pomodoro, shortBreak, longBreak, timerState, currentMode]);
 
   const handleTimerComplete = useCallback(() => {
     clearSession();
@@ -75,14 +98,17 @@ export function useTimer({
 
       const newCount = pomodoroCount + 1;
       const isLongBreak = newCount % 4 === 0;
-      setTimeLeft((isLongBreak ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK) * 60);
+      const nextMode = isLongBreak ? 'longBreak' : 'shortBreak';
+      const nextDuration = (isLongBreak ? longBreak : shortBreak) * 60;
+
       setTimerState('idle');
-      setSessionType('break');
+      setCurrentMode(nextMode);
+      setTimeLeft(nextDuration);
     } else {
       // Break completed, go back to work mode
-      setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
       setTimerState('idle');
-      setSessionType('work');
+      setCurrentMode('pomodoro');
+      setTimeLeft(pomodoro * 60);
     }
   }, [
     timerState,
@@ -91,6 +117,9 @@ export function useTimer({
     onPomodoroComplete,
     clearSession,
     onTimerComplete,
+    pomodoro,
+    shortBreak,
+    longBreak,
   ]);
 
   // Timer interval effect
@@ -111,16 +140,12 @@ export function useTimer({
             timeLeft: newTimeLeft,
             timerState,
             selectedCategory,
-            sessionType,
+            currentMode,
             startedAt:
               Date.now() -
-              (sessionType === 'work'
-                ? TIMER_CONSTANTS.WORK_MINUTES * 60
-                : (pomodoroCount % 4 === 0
-                    ? TIMER_CONSTANTS.LONG_BREAK
-                    : TIMER_CONSTANTS.SHORT_BREAK) *
-                    60 -
-                  newTimeLeft) *
+              (currentMode === 'pomodoro'
+                ? pomodoro * 60
+                : (currentMode === 'longBreak' ? longBreak : shortBreak) * 60 - newTimeLeft) *
                 1000,
           });
 
@@ -149,40 +174,32 @@ export function useTimer({
     pomodoroCount,
     saveSession,
     clearSession,
-    sessionType,
+    currentMode,
+    pomodoro,
+    shortBreak,
+    longBreak,
   ]);
 
   const startTimer = useCallback(() => {
     if (!selectedCategory) return;
 
-    if (sessionType === 'break') {
-      // Starting a break
-      setTimerState('break');
+    const sessionType = currentMode === 'pomodoro' ? 'working' : 'break';
+    setTimerState(sessionType);
 
-      const breakMinutes =
-        pomodoroCount % 4 === 0 ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK;
+    const duration = {
+      pomodoro: pomodoro * 60,
+      shortBreak: shortBreak * 60,
+      longBreak: longBreak * 60,
+    }[currentMode];
 
-      saveSession({
-        timeLeft: breakMinutes * 60,
-        timerState: 'break',
-        selectedCategory,
-        sessionType: 'break',
-        startedAt: Date.now(),
-      });
-    } else {
-      // Starting work session
-      setTimerState('working');
-      setSessionType('work');
-
-      saveSession({
-        timeLeft: TIMER_CONSTANTS.WORK_MINUTES * 60,
-        timerState: 'working',
-        selectedCategory,
-        sessionType: 'work',
-        startedAt: Date.now(),
-      });
-    }
-  }, [selectedCategory, sessionType, pomodoroCount, saveSession]);
+    saveSession({
+      timeLeft: duration,
+      timerState: sessionType,
+      selectedCategory,
+      currentMode,
+      startedAt: Date.now(),
+    });
+  }, [selectedCategory, currentMode, pomodoro, shortBreak, longBreak, saveSession]);
 
   const pauseTimer = useCallback(() => {
     setTimerState('paused');
@@ -190,66 +207,63 @@ export function useTimer({
       timeLeft,
       timerState: 'paused',
       selectedCategory,
-      sessionType,
+      currentMode,
       pausedAt: Date.now(),
     });
-  }, [timeLeft, selectedCategory, sessionType, saveSession]);
+  }, [timeLeft, selectedCategory, currentMode, saveSession]);
 
   const resumeTimer = useCallback(() => {
-    const newTimerState = sessionType === 'work' ? 'working' : 'break';
+    const newTimerState = currentMode === 'pomodoro' ? 'working' : 'break';
     setTimerState(newTimerState);
 
     const totalSeconds =
-      sessionType === 'work'
-        ? TIMER_CONSTANTS.WORK_MINUTES * 60
-        : (pomodoroCount % 4 === 0 ? TIMER_CONSTANTS.LONG_BREAK : TIMER_CONSTANTS.SHORT_BREAK) * 60;
+      currentMode === 'pomodoro'
+        ? pomodoro * 60
+        : (currentMode === 'longBreak' ? longBreak : shortBreak) * 60;
     const elapsedSeconds = totalSeconds - timeLeft;
 
     saveSession({
       timeLeft,
       timerState: newTimerState,
       selectedCategory,
-      sessionType,
+      currentMode,
       startedAt: Date.now() - elapsedSeconds * 1000,
     });
-  }, [sessionType, pomodoroCount, timeLeft, selectedCategory, saveSession]);
+  }, [currentMode, pomodoro, shortBreak, longBreak, timeLeft, selectedCategory, saveSession]);
 
   const resetTimer = useCallback(() => {
     setTimerState('idle');
-    setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
-    setSessionType('work');
+    setCurrentMode('pomodoro');
+    setTimeLeft(pomodoro * 60);
     clearSession();
-  }, [clearSession]);
+  }, [clearSession, pomodoro]);
 
   const switchMode = useCallback(
-    (mode: 'pomodoro' | 'shortBreak' | 'longBreak') => {
-      // Only allow switching when timer is idle
+    (mode: TimerMode) => {
       if (timerState !== 'idle') return;
 
       clearSession();
+      setCurrentMode(mode);
 
       switch (mode) {
         case 'pomodoro':
-          setTimeLeft(TIMER_CONSTANTS.WORK_MINUTES * 60);
-          setSessionType('work');
+          setTimeLeft(pomodoro * 60);
           break;
         case 'shortBreak':
-          setTimeLeft(TIMER_CONSTANTS.SHORT_BREAK * 60);
-          setSessionType('break');
+          setTimeLeft(shortBreak * 60);
           break;
         case 'longBreak':
-          setTimeLeft(TIMER_CONSTANTS.LONG_BREAK * 60);
-          setSessionType('break');
+          setTimeLeft(longBreak * 60);
           break;
       }
     },
-    [timerState, clearSession],
+    [timerState, clearSession, pomodoro, shortBreak, longBreak],
   );
 
   return {
     timeLeft,
     timerState,
-    sessionType,
+    currentMode,
     isInitialized,
     savedCategory,
     startTimer,

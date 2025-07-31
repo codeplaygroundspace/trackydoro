@@ -2,21 +2,60 @@
 
 import { useState } from 'react';
 
+import { MAX_DURATION,MIN_DURATION } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import { useSettingsStore } from '@/store/useSettingsStore';
+
 interface SettingsModalProps {
   onClose: () => void;
 }
 
+/**
+ * A modal component that allows users to configure the durations for the Pomodoro timer.
+ * It provides input fields for work, short break, and long break sessions, validates
+ * the input to ensure it falls within a defined range, and saves the settings to a
+ * global store, which persists them to local storage.
+ */
 export function Settings({ onClose }: SettingsModalProps) {
-  const [pomodoroTime, setPomodoroTime] = useState(25); // Initial value for Pomodoro
+  const {
+    pomodoro: initialPomodoro,
+    shortBreak: initialShortBreak,
+    longBreak: initialLongBreak,
+    setPomodoro,
+    setShortBreak,
+    setLongBreak,
+  } = useSettingsStore();
 
-  const handlePomodoroChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPomodoroTime(Number(e.target.value));
+  const [pomodoroTime, setPomodoroTime] = useState(String(initialPomodoro));
+  const [shortBreakTime, setShortBreakTime] = useState(String(initialShortBreak));
+  const [longBreakTime, setLongBreakTime] = useState(String(initialLongBreak));
+
+  const validate = (value: string) => {
+    if (value.trim() === '') return false; // Disallow empty strings
+    const num = Number(value);
+    return !isNaN(num) && num >= MIN_DURATION && num <= MAX_DURATION && Number.isInteger(num);
   };
 
-  const isSaveDisabled = pomodoroTime === 0;
+  const isPomodoroValid = validate(pomodoroTime);
+  const isShortBreakValid = validate(shortBreakTime);
+  const isLongBreakValid = validate(longBreakTime);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isPomodoroValid && isShortBreakValid && isLongBreakValid) {
+      setPomodoro(Number(pomodoroTime));
+      setShortBreak(Number(shortBreakTime));
+      setLongBreak(Number(longBreakTime));
+      onClose();
+    }
+  };
+
+  const isSaveDisabled = !isPomodoroValid || !isShortBreakValid || !isLongBreakValid;
+
+  const validationMessage = `Must be a whole number between ${MIN_DURATION} and ${MAX_DURATION}.`;
 
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <h3 className="text-2xl font-semibold mb-4"> Settings</h3>
       <h4 className="text-lg font-semibold mb-2">Time (minutes)</h4>
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
@@ -28,13 +67,20 @@ export function Settings({ onClose }: SettingsModalProps) {
             Pomodoro
           </label>
           <input
-            type="number"
+            type="text"
             id="pomodoro-time"
-            className="w-full p-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary focus:border-transparent"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={cn(
+              'w-full p-2 rounded-lg bg-input border',
+              isPomodoroValid ? 'border-border' : 'border-red-500',
+              'focus:ring-2 focus:ring-primary focus:border-transparent',
+            )}
             aria-label="Pomodoro time in minutes"
             value={pomodoroTime}
-            onChange={handlePomodoroChange}
+            onChange={(e) => setPomodoroTime(e.target.value)}
           />
+          {!isPomodoroValid && <p className="text-red-500 text-xs mt-1">{validationMessage}</p>}
         </div>
         <div className="flex-1">
           <label
@@ -44,12 +90,20 @@ export function Settings({ onClose }: SettingsModalProps) {
             Short Break
           </label>
           <input
-            type="number"
+            type="text"
             id="short-break-time"
-            className="w-full p-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary focus:border-transparent"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={cn(
+              'w-full p-2 rounded-lg bg-input border',
+              isShortBreakValid ? 'border-border' : 'border-red-500',
+              'focus:ring-2 focus:ring-primary focus:border-transparent',
+            )}
             aria-label="Short break time in minutes"
-            defaultValue={5} // Placeholder value
+            value={shortBreakTime}
+            onChange={(e) => setShortBreakTime(e.target.value)}
           />
+          {!isShortBreakValid && <p className="text-red-500 text-xs mt-1">{validationMessage}</p>}
         </div>
         <div className="flex-1">
           <label
@@ -59,31 +113,42 @@ export function Settings({ onClose }: SettingsModalProps) {
             Long Break
           </label>
           <input
-            type="number"
+            type="text"
             id="long-break-time"
-            className="w-full p-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary focus:border-transparent"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={cn(
+              'w-full p-2 rounded-lg bg-input border',
+              isLongBreakValid ? 'border-border' : 'border-red-500',
+              'focus:ring-2 focus:ring-primary focus:border-transparent',
+            )}
             aria-label="Long break time in minutes"
-            defaultValue={15} // Placeholder value
+            value={longBreakTime}
+            onChange={(e) => setLongBreakTime(e.target.value)}
           />
+          {!isLongBreakValid && <p className="text-red-500 text-xs mt-1">{validationMessage}</p>}
         </div>
       </div>
       <div className="flex justify-end gap-2 mt-4">
         <button
+          type="button"
           onClick={onClose}
           className="px-4 py-2 rounded-lg font-semibold transition-all duration-200 cursor-pointer bg-card text-card-foreground hover:bg-card/70"
         >
           Cancel
         </button>
         <button
-          onClick={() => {
-            /* TODO: Implement save logic */ onClose();
-          }}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${isSaveDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer'}`}
+          type="submit"
+          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+            isSaveDisabled
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer'
+          }`}
           disabled={isSaveDisabled}
         >
           Save
         </button>
       </div>
-    </div>
+    </form>
   );
 }

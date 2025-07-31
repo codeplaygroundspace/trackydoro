@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+import { MoonIcon,SunIcon } from '@/components/icons';
+
 import { useTheme } from './ThemeProvider';
-import { SunIcon, MoonIcon } from '@/components/icons';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

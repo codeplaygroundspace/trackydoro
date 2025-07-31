@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/theme/ThemeProvider';
-import { getCategoryColor, getCategoryColorPalette, CategoryColorKey } from '@/lib/theme-colors';
+import { CategoryColorKey,getCategoryColor, getCategoryColorPalette } from '@/lib/theme-colors';
 
 export function useThemeColors() {
   const { theme } = useTheme();

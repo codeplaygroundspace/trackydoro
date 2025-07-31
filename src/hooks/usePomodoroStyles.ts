@@ -1,20 +1,22 @@
+import { TimerMode } from '@/types';
+
 /**
  * A hook that provides dynamic Tailwind CSS classes for the Pomodoro timer
- * based on its current session type (work or break).
+ * based on its current mode (pomodoro, shortBreak, or longBreak).
  *
- * @param sessionType - The current session type, either 'work' or 'break'.
+ * @param currentMode - The current timer mode.
  * @returns An object containing the appropriate CSS classes for the card.
  */
-export const usePomodoroStyles = (sessionType: 'work' | 'break') => {
+export const usePomodoroStyles = (currentMode: TimerMode) => {
   // Apply red theme for work sessions.
-  if (sessionType === 'work') {
+  if (currentMode === 'pomodoro') {
     return {
       cardClasses: 'bg-pomodoro-red-bg dark:bg-pomodoro-red-bg-dark',
     };
   }
 
   // Apply green theme for break sessions.
-  if (sessionType === 'break') {
+  if (currentMode === 'shortBreak' || currentMode === 'longBreak') {
     return {
       cardClasses: 'bg-pomodoro-green-bg dark:bg-pomodoro-green-bg-dark',
     };

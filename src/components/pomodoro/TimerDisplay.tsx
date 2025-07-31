@@ -1,18 +1,19 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
 import { formatTime } from '@/lib/date-utils';
-import { TimerState } from '@/types';
 import { cn } from '@/lib/utils';
+import { TimerMode,TimerState } from '@/types';
 
 interface TimerDisplayProps {
   timeLeft: number;
   timerState: TimerState;
-  sessionType: 'work' | 'break';
-  switchMode?: (mode: 'pomodoro' | 'shortBreak' | 'longBreak') => void;
+  currentMode: TimerMode;
+  switchMode?: (mode: TimerMode) => void;
 }
 
-export function TimerDisplay({ timeLeft, timerState, sessionType, switchMode }: TimerDisplayProps) {
+export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: TimerDisplayProps) {
   const prevTimeRef = useRef(timeLeft);
   const prevStateRef = useRef(timerState);
 
@@ -46,7 +47,7 @@ export function TimerDisplay({ timeLeft, timerState, sessionType, switchMode }: 
     if (timerState === 'paused') return 'Timer paused';
     if (seconds === 0 && minutes === 0) return 'Session complete!';
 
-    const sessionName = sessionType === 'work' ? 'Work session' : 'Break time';
+    const sessionName = currentMode === 'pomodoro' ? 'Work session' : 'Break time';
 
     // Announce at specific intervals
     if (minutes === 1 && seconds === 0) {
@@ -69,12 +70,12 @@ export function TimerDisplay({ timeLeft, timerState, sessionType, switchMode }: 
             disabled={timerState !== 'idle'}
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              sessionType === 'work' && timeLeft === 25 * 60
+              currentMode === 'pomodoro'
                 ? 'bg-secondary text-secondary-foreground'
                 : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
-            aria-label="Switch to Pomodoro mode (25 minutes)"
+            aria-label="Switch to Pomodoro mode"
           >
             Pomodoro
           </button>
@@ -83,12 +84,12 @@ export function TimerDisplay({ timeLeft, timerState, sessionType, switchMode }: 
             disabled={timerState !== 'idle'}
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              sessionType === 'break' && timeLeft === 5 * 60
+              currentMode === 'shortBreak'
                 ? 'bg-secondary text-secondary-foreground'
                 : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
-            aria-label="Switch to Short Break mode (5 minutes)"
+            aria-label="Switch to Short Break mode"
           >
             Short Break
           </button>
@@ -97,12 +98,12 @@ export function TimerDisplay({ timeLeft, timerState, sessionType, switchMode }: 
             disabled={timerState !== 'idle'}
             className={cn(
               'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              sessionType === 'break' && timeLeft === 15 * 60
+              currentMode === 'longBreak'
                 ? 'bg-secondary text-secondary-foreground'
                 : 'bg-secondary/50 text-secondary-foreground/70 hover:bg-secondary/70',
               timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
             )}
-            aria-label="Switch to Long Break mode (15 minutes)"
+            aria-label="Switch to Long Break mode"
           >
             Long Break
           </button>

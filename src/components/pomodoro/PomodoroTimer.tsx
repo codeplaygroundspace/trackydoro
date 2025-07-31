@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Category } from '@/types';
-import { useTimer } from '@/hooks/useTimer';
+
 import { useAudio } from '@/hooks/useAudio';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { usePomodoroStyles } from '@/hooks/usePomodoroStyles'; // Import the new hook
-import { TimerDisplay } from './TimerDisplay';
-import { TimerControls } from './TimerControls';
+import { useTimer } from '@/hooks/useTimer';
 import { cn } from '@/lib/utils'; // Import the utility for conditional classes
+import { Category } from '@/types';
+
+import { TimerControls } from './TimerControls';
+import { TimerDisplay } from './TimerDisplay';
 
 interface PomodoroTimerProps {
   categories: Category[];
@@ -30,7 +32,7 @@ export function PomodoroTimer({
   const {
     timeLeft,
     timerState,
-    sessionType,
+    currentMode,
     isInitialized,
     savedCategory,
     startTimer: startTimerBase,
@@ -46,7 +48,7 @@ export function PomodoroTimer({
   });
 
   // Get dynamic styles based on the session type
-  const { cardClasses } = usePomodoroStyles(sessionType);
+  const { cardClasses } = usePomodoroStyles(currentMode);
 
   // Load saved category on initialization
   useEffect(() => {
@@ -123,7 +125,7 @@ export function PomodoroTimer({
         <TimerDisplay
           timeLeft={timeLeft}
           timerState={timerState}
-          sessionType={sessionType}
+          currentMode={currentMode}
           switchMode={switchMode}
         />
 
