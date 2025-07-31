@@ -1,10 +1,10 @@
-export { OutlineKeyboard } from './OutlineKeyboard';
-export { SunIcon } from './SunIcon';
-export { MoonIcon } from './MoonIcon';
-export { PlusIcon } from './PlusIcon';
-export { EditIcon } from './EditIcon';
-export { TrashIcon } from './TrashIcon';
-export { GearIcon } from './GearIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
 export { Clock3 } from './Clock3';
+export { EditIcon } from './EditIcon';
+export { GearIcon } from './GearIcon';
+export { MoonIcon } from './MoonIcon';
+export { OutlineKeyboard } from './OutlineKeyboard';
+export { PlusIcon } from './PlusIcon';
+export { SunIcon } from './SunIcon';
+export { TrashIcon } from './TrashIcon';

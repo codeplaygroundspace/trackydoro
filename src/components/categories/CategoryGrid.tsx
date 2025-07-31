@@ -1,6 +1,7 @@
 'use client';
 
 import { Category, CategoryData } from '@/types';
+
 import { CategoryRow } from './CategoryRow';
 
 interface CategoryGridProps {

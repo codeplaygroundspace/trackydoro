@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Category, COLORS } from '@/types';
+import { useEffect,useState } from 'react';
+
+import { COLORS } from '@/lib/constants';
+import { Category } from '@/types';
 
 interface CategoryFormProps {
   initialValues?: Category;

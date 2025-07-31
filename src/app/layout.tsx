@@ -1,7 +1,9 @@
-import type { Metadata } from 'next';
-import { ThemeProvider } from '@/components/theme';
 import './globals.css';
+
+import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+
+import { ThemeProvider } from '@/components/theme';
 
 // Add fonts following Nextjs documentation
 const martianGrotesk = localFont({

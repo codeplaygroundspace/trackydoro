@@ -1,16 +1,26 @@
 'use client';
 
-import { TimerState } from '@/types';
+import { TimerMode,TimerState } from '@/types';
 
 interface TimerSession {
   timeLeft: number;
   timerState: TimerState;
   selectedCategory: string;
+  currentMode: TimerMode;
   sessionType?: 'work' | 'break';
   startedAt?: number;
   pausedAt?: number;
 }
 
+/**
+ * A hook that provides an interface for interacting with the timer's session state
+ * stored in `localStorage`. It handles the logic for saving the current timer
+ * state, loading it when the application re-opens, and clearing it when a session
+ * is completed or reset.
+ *
+ * This abstraction is crucial for ensuring that the timer's state can survive
+ * page reloads, providing a seamless user experience.
+ */
 export function useTimerPersistence() {
   const saveSession = (session: TimerSession) => {
     if (typeof window !== 'undefined') {
