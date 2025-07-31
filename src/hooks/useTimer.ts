@@ -16,10 +16,10 @@
  * to keep them local and optimize performance.
  */
 
-import { useCallback,useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useSettingsStore } from '@/store/useSettingsStore';
-import { TimerMode,TimerState } from '@/types';
+import { TimerMode, TimerState } from '@/types';
 
 import { useTimerPersistence } from './useTimerPersistence';
 

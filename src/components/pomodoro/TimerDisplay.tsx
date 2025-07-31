@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { formatTime } from '@/lib/date-utils';
 import { cn } from '@/lib/utils';
-import { TimerMode,TimerState } from '@/types';
+import { TimerMode, TimerState } from '@/types';
 
 interface TimerDisplayProps {
   timeLeft: number;

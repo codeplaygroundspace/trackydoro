@@ -1,7 +1,7 @@
 'use client';
 
 import { EditIcon, TrashIcon } from '@/components/icons';
-import { formatMinutes,getDaysArray } from '@/lib/date-utils';
+import { formatMinutes, getDaysArray } from '@/lib/date-utils';
 import { Category, DayData } from '@/types';
 
 import { CategorySquare } from './CategorySquare';

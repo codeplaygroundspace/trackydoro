@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { MoonIcon,SunIcon } from '@/components/icons';
+import { MoonIcon, SunIcon } from '@/components/icons';
 
 import { useTheme } from './ThemeProvider';
 

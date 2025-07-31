@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { COLORS } from '@/lib/constants';
 import { Category } from '@/types';
@@ -11,6 +11,9 @@ interface CategoryFormProps {
   onCancel: () => void;
 }
 
+/**
+ * A form component for creating and editing categories.
+ */
 export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryFormProps) {
   const [name, setName] = useState(initialValues?.name || '');
   const [color, setColor] = useState(initialValues?.color || COLORS[0]);
@@ -89,7 +92,9 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
         <label className="block text-sm text-muted-foreground mb-2">Daily target</label>
         <div className="flex items-center gap-2">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={hours}
             onChange={handleHoursChange}
             className="w-24 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
@@ -97,10 +102,11 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
           />
           <span className="text-muted-foreground">hours</span>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={minutes}
             onChange={handleMinutesChange}
-            step="15"
             className="w-24 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Target minutes"
           />

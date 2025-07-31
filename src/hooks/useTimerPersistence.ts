@@ -1,6 +1,6 @@
 'use client';
 
-import { TimerMode,TimerState } from '@/types';
+import { TimerMode, TimerState } from '@/types';
 
 interface TimerSession {
   timeLeft: number;

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Clock3, GearIcon,OutlineKeyboard } from '@/components/icons';
+import { Clock3, GearIcon, OutlineKeyboard } from '@/components/icons';
 import { ThemeToggle } from '@/components/theme';
 
 interface AppHeaderProps {

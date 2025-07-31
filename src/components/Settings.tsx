@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { MAX_DURATION,MIN_DURATION } from '@/lib/constants';
+import { MAX_DURATION, MIN_DURATION } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
