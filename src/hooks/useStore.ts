@@ -16,9 +16,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import { COLORS } from '@/lib/constants';
+import { type CategoryColorKey, COLOR_MIGRATION_MAP } from '@/lib/theme-colors';
 import { useSettingsStore } from '@/store/useSettingsStore';
-import { Category, CategoryData } from '@/types';
+import type { Category, CategoryData } from '@/types';
 
 interface PomodoroStore {
   // State
@@ -29,8 +29,8 @@ interface PomodoroStore {
   isLoading: boolean;
 
   // Actions
-  addCategory: (name: string, color: string, target: number) => void;
-  updateCategory: (id: string, name: string, color: string, target: number) => void;
+  addCategory: (name: string, colorKey: CategoryColorKey, target: number) => void;
+  updateCategory: (id: string, name: string, colorKey: CategoryColorKey, target: number) => void;
   deleteCategory: (id: string) => void;
   setSelectedCategory: (id: string) => void;
   recordPomodoro: (categoryId: string) => void;
@@ -39,10 +39,10 @@ interface PomodoroStore {
 }
 
 const DEFAULT_CATEGORIES: Category[] = [
-  { id: '1', name: 'Study', color: COLORS[1], target: 90 },
-  { id: '2', name: 'Work', color: COLORS[2], target: 120 },
-  { id: '3', name: 'Exercise', color: COLORS[0], target: 60 },
-  { id: '4', name: 'Reading', color: COLORS[3], target: 30 },
+  { id: '1', name: 'Study', colorKey: 'blue', target: 90 },
+  { id: '2', name: 'Work', colorKey: 'purple', target: 120 },
+  { id: '3', name: 'Exercise', colorKey: 'emerald', target: 60 },
+  { id: '4', name: 'Reading', colorKey: 'amber', target: 30 },
 ];
 
 export const useStore = create<PomodoroStore>()(
@@ -56,11 +56,11 @@ export const useStore = create<PomodoroStore>()(
       isLoading: false,
 
       // Actions
-      addCategory: (name, color, target) => {
+      addCategory: (name, colorKey, target) => {
         const newCategory: Category = {
           id: Date.now().toString(),
           name,
-          color,
+          colorKey,
           target,
         };
 
@@ -70,10 +70,10 @@ export const useStore = create<PomodoroStore>()(
         }));
       },
 
-      updateCategory: (id, name, color, target) => {
+      updateCategory: (id, name, colorKey, target) => {
         set((state) => ({
           categories: state.categories.map((cat) =>
-            cat.id === id ? { ...cat, name, color, target } : cat,
+            cat.id === id ? { ...cat, name, colorKey, target } : cat,
           ),
         }));
       },
@@ -137,6 +137,28 @@ export const useStore = create<PomodoroStore>()(
     }),
     {
       name: 'pomodoro-storage',
+      version: 1,
+      migrate: (persistedState: any) => {
+        if (!persistedState || !Array.isArray(persistedState.categories)) return persistedState;
+
+        const migratedCategories = persistedState.categories.map((cat: any) => {
+          if (cat && typeof cat === 'object') {
+            if ('colorKey' in cat) return cat; // already migrated
+            const hex: string | undefined = cat.color;
+            const colorKey: CategoryColorKey =
+              (hex && COLOR_MIGRATION_MAP[hex.toLowerCase() as keyof typeof COLOR_MIGRATION_MAP]) ||
+              'blue';
+            const { color: _omit, ...rest } = cat;
+            return { ...rest, colorKey };
+          }
+          return cat;
+        });
+
+        return {
+          ...persistedState,
+          categories: migratedCategories,
+        };
+      },
     },
   ),
 );

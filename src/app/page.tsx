@@ -173,8 +173,8 @@ export default function Home() {
                 editForm={(category) => (
                   <CategoryForm
                     initialValues={category}
-                    onSubmit={(name, color, target) => {
-                      updateCategory(category.id, name, color, target);
+                    onSubmit={(name, colorKey, target) => {
+                      updateCategory(category.id, name, colorKey, target);
                       setEditingCategory(null);
                     }}
                     onCancel={() => setEditingCategory(null)}

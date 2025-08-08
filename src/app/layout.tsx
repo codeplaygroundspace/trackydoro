@@ -5,7 +5,6 @@ import localFont from 'next/font/local';
 
 import { ThemeProvider } from '@/components/theme';
 
-// Add fonts following Nextjs documentation
 const martianGrotesk = localFont({
   src: [
     {
@@ -101,6 +100,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={martianGrotesk.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <script
           dangerouslySetInnerHTML={{

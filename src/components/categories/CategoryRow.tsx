@@ -31,16 +31,15 @@ export function CategoryRow({
     return day || { minutes: 0, pomodoros: 0 };
   };
 
+  const tokenBg = (cat: Category) => `oklch(var(--category-${cat.colorKey}) / 1)`;
+
   const getSquareColor = (date: string) => {
     const { minutes } = getDayData(date);
     if (minutes === 0) return 'var(--muted)';
 
     const percentage = Math.min(minutes / category.target, 1);
     const opacity = 0.2 + percentage * 0.8;
-
-    return `${category.color}${Math.round(opacity * 255)
-      .toString(16)
-      .padStart(2, '0')}`;
+    return `oklch(var(--category-${category.colorKey}) / ${opacity})`;
   };
 
   const getTodayProgress = () => {
@@ -56,7 +55,7 @@ export function CategoryRow({
         ) : (
           <>
             <h2 className="text-xl font-black flex items-center gap-2">
-              <span className="w-4 h-4 rounded" style={{ backgroundColor: category.color }} />
+              <span className="w-4 h-4 rounded" style={{ backgroundColor: tokenBg(category) }} />
               {category.name}
             </h2>
             <div className="flex gap-2">
