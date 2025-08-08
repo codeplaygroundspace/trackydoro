@@ -1,5 +1,6 @@
 'use client';
 
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { TimerMode, TimerState } from '@/types';
 
 interface TimerSession {
@@ -37,19 +38,29 @@ export function useTimerPersistence() {
 
       const session = JSON.parse(saved) as TimerSession;
 
-      // If timer was running, calculate elapsed time
+      // If timer was running, calculate accurate remaining time based on startedAt and settings-derived total duration
       if (session.timerState === 'working' || session.timerState === 'break') {
         const now = Date.now();
+        const { pomodoro, shortBreak, longBreak } = useSettingsStore.getState();
+        const total =
+          session.currentMode === 'pomodoro'
+            ? pomodoro * 60
+            : session.currentMode === 'longBreak'
+              ? longBreak * 60
+              : shortBreak * 60;
         const elapsed = Math.floor((now - (session.startedAt || now)) / 1000);
-        const adjustedTimeLeft = Math.max(0, session.timeLeft - elapsed);
+        const adjustedTimeLeft = Math.max(0, total - elapsed);
 
-        // If time ran out while away, mark as completed
         if (adjustedTimeLeft === 0) {
-          return null; // Let the timer start fresh
+          return null; // Let the app handle completion and reset
         }
 
-        // Return the adjusted time
         session.timeLeft = adjustedTimeLeft;
+      }
+
+      // If paused, keep timeLeft unchanged
+      if (session.timerState === 'paused') {
+        // no-op; rely on stored timeLeft
       }
 
       return session;

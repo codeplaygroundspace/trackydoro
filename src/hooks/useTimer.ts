@@ -58,6 +58,7 @@ export function useTimer({
   const [savedCategory, setSavedCategory] = useState<string | undefined>();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startedAtRef = useRef<number | null>(null);
   const { saveSession, loadSession, clearSession } = useTimerPersistence();
 
   // Load saved session on mount
@@ -141,12 +142,8 @@ export function useTimer({
             timerState,
             selectedCategory,
             currentMode,
-            startedAt:
-              Date.now() -
-              (currentMode === 'pomodoro'
-                ? pomodoro * 60
-                : (currentMode === 'longBreak' ? longBreak : shortBreak) * 60 - newTimeLeft) *
-                1000,
+            // Keep a stable startedAt reference during a running session
+            startedAt: startedAtRef.current ?? Date.now(),
           });
 
           return newTimeLeft;
@@ -184,20 +181,23 @@ export function useTimer({
     if (!selectedCategory) return;
 
     const sessionType = currentMode === 'pomodoro' ? 'working' : 'break';
-    setTimerState(sessionType);
-
     const duration = {
       pomodoro: pomodoro * 60,
       shortBreak: shortBreak * 60,
       longBreak: longBreak * 60,
     }[currentMode];
 
+    // Ensure UI countdown starts from the exact selected mode duration
+    setTimeLeft(duration);
+    setTimerState(sessionType);
+    startedAtRef.current = Date.now();
+
     saveSession({
       timeLeft: duration,
       timerState: sessionType,
       selectedCategory,
       currentMode,
-      startedAt: Date.now(),
+      startedAt: startedAtRef.current,
     });
   }, [selectedCategory, currentMode, pomodoro, shortBreak, longBreak, saveSession]);
 
@@ -221,13 +221,14 @@ export function useTimer({
         ? pomodoro * 60
         : (currentMode === 'longBreak' ? longBreak : shortBreak) * 60;
     const elapsedSeconds = totalSeconds - timeLeft;
+    startedAtRef.current = Date.now() - elapsedSeconds * 1000;
 
     saveSession({
       timeLeft,
       timerState: newTimerState,
       selectedCategory,
       currentMode,
-      startedAt: Date.now() - elapsedSeconds * 1000,
+      startedAt: startedAtRef.current,
     });
   }, [currentMode, pomodoro, shortBreak, longBreak, timeLeft, selectedCategory, saveSession]);
 
@@ -235,6 +236,7 @@ export function useTimer({
     setTimerState('idle');
     setCurrentMode('pomodoro');
     setTimeLeft(pomodoro * 60);
+    startedAtRef.current = null;
     clearSession();
   }, [clearSession, pomodoro]);
 
@@ -256,6 +258,7 @@ export function useTimer({
           setTimeLeft(longBreak * 60);
           break;
       }
+      startedAtRef.current = null;
     },
     [timerState, clearSession, pomodoro, shortBreak, longBreak],
   );
