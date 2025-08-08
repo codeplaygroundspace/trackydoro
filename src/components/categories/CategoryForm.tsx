@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-import { COLORS } from '@/lib/constants';
+import { CATEGORY_COLOR_KEYS } from '@/lib/theme-colors';
 import { Category } from '@/types';
 
 interface CategoryFormProps {
   initialValues?: Category;
-  onSubmit: (name: string, color: string, target: number) => void;
+  onSubmit: (name: string, colorKey: Category['colorKey'], target: number) => void;
   onCancel: () => void;
 }
 
@@ -16,7 +16,9 @@ interface CategoryFormProps {
  */
 export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryFormProps) {
   const [name, setName] = useState(initialValues?.name || '');
-  const [color, setColor] = useState(initialValues?.color || COLORS[0]);
+  const [colorKey, setColorKey] = useState<Category['colorKey']>(
+    initialValues?.colorKey || 'emerald',
+  );
 
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -25,6 +27,7 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
     const initialTarget = initialValues?.target || 60;
     setHours(Math.floor(initialTarget / 60));
     setMinutes(initialTarget % 60);
+    if (initialValues?.colorKey) setColorKey(initialValues.colorKey);
   }, [initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,7 +35,7 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
     if (name.trim()) {
       const totalMinutes = hours * 60 + minutes;
       if (totalMinutes > 0) {
-        onSubmit(name.trim(), color, totalMinutes);
+        onSubmit(name.trim(), colorKey, totalMinutes);
       }
     }
   };
@@ -72,20 +75,7 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
 
       <div>
         <label className="block text-sm text-muted-foreground mb-2">Color</label>
-        <div className="flex gap-2 flex-wrap">
-          {COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setColor(c)}
-              className={`w-8 h-8 rounded-lg transition-all duration-200 cursor-pointer ${
-                color === c ? 'ring-2 ring-white scale-110' : ''
-              }`}
-              style={{ backgroundColor: c }}
-              aria-label={`Select color ${c}`}
-            />
-          ))}
-        </div>
+        <ColorKeySwatches selected={colorKey} onSelect={setColorKey} />
       </div>
 
       <div>
@@ -132,3 +122,32 @@ export function CategoryForm({ initialValues, onSubmit, onCancel }: CategoryForm
     </form>
   );
 }
+
+type ColorKeySwatchesProps = {
+  selected: Category['colorKey'];
+  onSelect: (key: Category['colorKey']) => void;
+};
+
+const ColorKeySwatches = ({ selected, onSelect }: ColorKeySwatchesProps) => {
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {CATEGORY_COLOR_KEYS.map((key) => {
+        const bg = `oklch(var(--category-${key}) / 1)`;
+        const isSelected = selected === key;
+        return (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onSelect(key)}
+            className={`w-8 h-8 rounded-lg transition-all duration-200 cursor-pointer ${
+              isSelected ? 'ring-2 ring-white scale-110' : ''
+            }`}
+            style={{ backgroundColor: bg }}
+            aria-label={`Select color ${key}`}
+            title={key}
+          />
+        );
+      })}
+    </div>
+  );
+};

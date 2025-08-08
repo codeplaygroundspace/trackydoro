@@ -27,6 +27,18 @@
   /* Pomodoro card specific colors */
   --pomodoro-red-bg: oklch(62.17% 0.197 11.3 / 0.4);
   --pomodoro-green-bg: oklch(70.3% 0.156 142.5 / 0.4);
+
+  /* Category color tokens (light) — store OKLCH triple only */
+  --category-emerald: 69.53% 0.177 162.03;
+  --category-blue: 60.16% 0.24 265.52;
+  --category-purple: 59.21% 0.227 283.71;
+  --category-amber: 74.56% 0.154 70.08;
+  --category-red: 62.8% 0.231 25.34;
+  --category-teal: 64.99% 0.153 180.72;
+  --category-pink: 66.93% 0.223 358.41;
+  --category-indigo: 55.98% 0.213 274.04;
+  --category-lime: 74.6% 0.213 127.39;
+  --category-orange: 68.1% 0.195 41.15;
 }
 
 /* Light Theme - High contrast and vibrant */
@@ -95,6 +107,18 @@
   /* Pomodoro card specific colors (Dark Theme) */
   --pomodoro-red-bg-dark: oklch(55.06% 0.212 11.3 / 0.5);
   --pomodoro-green-bg-dark: oklch(63% 0.169 142.5 / 0.5);
+
+  /* Category color tokens (dark) — store OKLCH triple only */
+  --category-emerald: 78.53% 0.147 162.03;
+  --category-blue: 70.16% 0.2 265.52;
+  --category-purple: 69.21% 0.187 283.71;
+  --category-amber: 84.56% 0.124 70.08;
+  --category-red: 72.8% 0.181 25.34;
+  --category-teal: 74.99% 0.123 180.72;
+  --category-pink: 76.93% 0.173 358.41;
+  --category-indigo: 65.98% 0.173 274.04;
+  --category-lime: 84.6% 0.163 127.39;
+  --category-orange: 78.1% 0.155 41.15;
 }
 
 @media (prefers-color-scheme: dark) {

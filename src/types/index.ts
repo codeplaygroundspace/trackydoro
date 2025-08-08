@@ -2,10 +2,12 @@ export type TimerState = 'idle' | 'working' | 'paused' | 'break';
 
 export type TimerMode = 'pomodoro' | 'shortBreak' | 'longBreak';
 
+import type { CategoryColorKey } from '@/lib/theme-colors';
+
 export type Category = {
   id: string;
   name: string;
-  color: string;
+  colorKey: CategoryColorKey;
   target: number;
 };
 
