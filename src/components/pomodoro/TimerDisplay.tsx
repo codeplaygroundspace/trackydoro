@@ -26,7 +26,7 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
     const prevMinutes = Math.floor(prevTimeRef.current / 60);
 
     // Announce every 5 minutes, at 1 minute, and at completion
-    if (timerState === 'working' || timerState === 'break') {
+    if (timerState === 'running') {
       if (minutes !== prevMinutes && (minutes % 5 === 0 || minutes === 1)) {
         // Will be announced by live region
       }
