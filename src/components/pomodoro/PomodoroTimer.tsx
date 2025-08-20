@@ -89,13 +89,18 @@ export function PomodoroTimer({
         key: 'r',
         handler: () => {
           if (timerState === 'working' || timerState === 'break' || timerState === 'paused') {
-            resetTimer();
+            handleReset();
           }
         },
       },
     ],
     isInitialized,
   );
+
+  const handleReset = () => {
+    playSound('reset');
+    resetTimer();
+  };
 
   if (!isInitialized) {
     return (
@@ -138,7 +143,7 @@ export function PomodoroTimer({
           onStart={handleStart}
           onPause={pauseTimer}
           onResume={handleResume}
-          onReset={resetTimer}
+          onReset={handleReset}
         />
       </div>
     </div>
