@@ -18,11 +18,10 @@ export function useAudio(): UseAudioReturn {
   });
 
   useEffect(() => {
-    // Initialize audio elements
     const audios = {
-      complete: new Audio('/sounds/sound-run-time.wav'),
-      start: new Audio('/sounds/pomo-start.wav'),
-      reset: new Audio('/sounds/UI_reset.wav'),
+      complete: new Audio('/sounds/UI_pomodoro_finish.wav'),
+      start: new Audio('/sounds/UI_pomodoro_start.wav'),
+      reset: new Audio('/sounds/UI_pomodoro_reset.wav'),
     };
 
     audioRefs.current = audios;

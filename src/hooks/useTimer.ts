@@ -92,10 +92,10 @@ export function useTimer({
 
   const handleTimerComplete = useCallback(() => {
     clearSession();
-    onTimerComplete?.();
 
     if (timerState === 'working') {
       onPomodoroComplete(selectedCategory);
+      onTimerComplete?.();
 
       const newCount = pomodoroCount + 1;
       const isLongBreak = newCount % 4 === 0;
@@ -107,6 +107,7 @@ export function useTimer({
       setTimeLeft(nextDuration);
     } else {
       // Break completed, go back to work mode
+      onTimerComplete?.(); // Play sound when break completes
       setTimerState('idle');
       setCurrentMode('pomodoro');
       setTimeLeft(pomodoro * 60);
