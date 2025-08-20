@@ -1,17 +1,11 @@
 'use client';
 
-/**
- * A UI component that renders the interactive controls for the Pomodoro timer.
- * This component is responsible for displaying the category selection dropdown + the primary action buttons (Start, Pause, Resume, Reset).
- */
-
 import { Category, TimerState } from '@/types';
 
 interface TimerControlsProps {
   categories: Category[];
   selectedCategory: string;
   timerState: TimerState;
-  isInitialized: boolean;
   onCategoryChange: (categoryId: string) => void;
   onStart: () => void;
   onPause: () => void;
@@ -23,7 +17,6 @@ export function TimerControls({
   categories,
   selectedCategory,
   timerState,
-  isInitialized,
   onCategoryChange,
   onStart,
   onPause,
@@ -32,7 +25,7 @@ export function TimerControls({
 }: TimerControlsProps) {
   return (
     <div className="flex flex-col items-center gap-4 mb-6">
-      {categories.length > 0 && isInitialized ? (
+      {categories.length > 0 ? (
         <select
           value={selectedCategory || ''}
           onChange={(e) => onCategoryChange(e.target.value)}
@@ -51,9 +44,9 @@ export function TimerControls({
             </option>
           ))}
         </select>
-      ) : categories.length === 0 ? (
+      ) : (
         <div className="text-muted-foreground">Add a project to get started</div>
-      ) : null}
+      )}
 
       <div className="flex flex-col gap-4">
         {timerState === 'idle' && categories.length > 0 && (
@@ -69,7 +62,7 @@ export function TimerControls({
           </button>
         )}
 
-        {(timerState === 'working' || timerState === 'break') && (
+        {timerState === 'running' && (
           <button
             onClick={onPause}
             className={
@@ -93,7 +86,7 @@ export function TimerControls({
           </button>
         )}
 
-        {(timerState === 'working' || timerState === 'break' || timerState === 'paused') && (
+        {timerState !== 'idle' && (
           <button
             onClick={onReset}
             className={

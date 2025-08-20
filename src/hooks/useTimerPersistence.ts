@@ -1,27 +1,17 @@
 'use client';
 
-import { useSettingsStore } from '@/store/useSettingsStore';
 import { TimerMode, TimerState } from '@/types';
 
-interface TimerSession {
+// This schema must be compatible with TimerStateShape in useTimer.ts
+export interface TimerSession {
   timeLeft: number;
   timerState: TimerState;
+  mode: TimerMode;
   selectedCategory: string;
-  currentMode: TimerMode;
-  sessionType?: 'work' | 'break';
-  startedAt?: number;
-  pausedAt?: number;
+  pomodorosCompleted: number;
+  startedAt: number | null;
 }
 
-/**
- * A hook that provides an interface for interacting with the timer's session state
- * stored in `localStorage`. It handles the logic for saving the current timer
- * state, loading it when the application re-opens, and clearing it when a session
- * is completed or reset.
- *
- * This abstraction is crucial for ensuring that the timer's state can survive
- * page reloads, providing a seamless user experience.
- */
 export function useTimerPersistence() {
   const saveSession = (session: TimerSession) => {
     if (typeof window !== 'undefined') {
@@ -29,7 +19,7 @@ export function useTimerPersistence() {
     }
   };
 
-  const loadSession = (): TimerSession | null => {
+  const loadSession = (): Partial<TimerSession> | null => {
     if (typeof window === 'undefined') return null;
 
     try {
@@ -38,34 +28,23 @@ export function useTimerPersistence() {
 
       const session = JSON.parse(saved) as TimerSession;
 
-      // If timer was running, calculate accurate remaining time based on startedAt and settings-derived total duration
-      if (session.timerState === 'working' || session.timerState === 'break') {
-        const now = Date.now();
-        const { pomodoro, shortBreak, longBreak } = useSettingsStore.getState();
-        const total =
-          session.currentMode === 'pomodoro'
-            ? pomodoro * 60
-            : session.currentMode === 'longBreak'
-              ? longBreak * 60
-              : shortBreak * 60;
-        const elapsed = Math.floor((now - (session.startedAt || now)) / 1000);
-        const adjustedTimeLeft = Math.max(0, total - elapsed);
+      // If timer was running when page was closed, calculate accurate remaining time
+      if (session.timerState === 'running' && session.startedAt) {
+        const elapsedSinceSave = Math.floor((Date.now() - session.startedAt) / 1000);
+        const adjustedTimeLeft = Math.max(0, session.timeLeft - elapsedSinceSave);
 
-        if (adjustedTimeLeft === 0) {
-          return null; // Let the app handle completion and reset
-        }
-
-        session.timeLeft = adjustedTimeLeft;
+        // If timer would have finished, set to 1 to trigger completion effect on next tick
+        session.timeLeft = adjustedTimeLeft > 0 ? adjustedTimeLeft : 1;
       }
 
-      // If paused, keep timeLeft unchanged
-      if (session.timerState === 'paused') {
-        // no-op; rely on stored timeLeft
-      }
+      // When loading, the timer is not running yet, so we reset startedAt.
+      // The RESUME action in the reducer will set a new one if the user continues.
+      session.startedAt = null;
 
       return session;
     } catch (error) {
       console.error('Error loading timer session:', error);
+      clearSession(); // Clear corrupted data
       return null;
     }
   };

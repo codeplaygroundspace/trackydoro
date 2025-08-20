@@ -1,4 +1,4 @@
-export type TimerState = 'idle' | 'working' | 'paused' | 'break';
+export type TimerState = 'idle' | 'running' | 'paused';
 
 export type TimerMode = 'pomodoro' | 'shortBreak' | 'longBreak';
 

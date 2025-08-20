@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 
 import { useAudio } from '@/hooks/useAudio';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { usePomodoroStyles } from '@/hooks/usePomodoroStyles'; // Import the new hook
+import { usePomodoroStyles } from '@/hooks/usePomodoroStyles';
 import { useTimer } from '@/hooks/useTimer';
-import { cn } from '@/lib/utils'; // Import the utility for conditional classes
-import { Category } from '@/types';
+import { cn } from '@/lib/utils';
+import { Category, TimerMode } from '@/types';
 
 import { TimerControls } from './TimerControls';
 import { TimerDisplay } from './TimerDisplay';
@@ -17,7 +17,6 @@ interface PomodoroTimerProps {
   selectedCategory: string;
   onCategoryChange: (categoryId: string) => void;
   onPomodoroComplete: (categoryId: string) => void;
-  pomodoroCount: number;
 }
 
 export function PomodoroTimer({
@@ -25,52 +24,52 @@ export function PomodoroTimer({
   selectedCategory,
   onCategoryChange,
   onPomodoroComplete,
-  pomodoroCount,
 }: PomodoroTimerProps) {
   const { playSound } = useAudio();
 
-  const {
-    timeLeft,
-    timerState,
-    currentMode,
-    isInitialized,
-    savedCategory,
-    startTimer: startTimerBase,
-    pauseTimer,
-    resumeTimer: resumeTimerBase,
-    resetTimer,
-    switchMode,
-  } = useTimer({
-    selectedCategory,
-    pomodoroCount,
+  const { state, dispatch, isInitialized } = useTimer({
     onPomodoroComplete,
     onTimerComplete: () => playSound('complete'),
   });
 
-  // Get dynamic styles based on the session type
+  const { timeLeft, timerState, mode: currentMode } = state;
+
   const { cardClasses } = usePomodoroStyles(currentMode);
 
-  // Load saved category on initialization
+  // Effect to handle category selection persistence from the timer state
   useEffect(() => {
-    if (isInitialized && savedCategory) {
-      const categoryExists = categories.some((c) => c.id === savedCategory);
+    if (isInitialized && state.selectedCategory) {
+      const categoryExists = categories.some((c) => c.id === state.selectedCategory);
       if (categoryExists) {
-        onCategoryChange(savedCategory);
+        onCategoryChange(state.selectedCategory);
       }
     }
-  }, [isInitialized, savedCategory, categories, onCategoryChange]);
+  }, [isInitialized, state.selectedCategory, categories, onCategoryChange]);
 
   const handleStart = () => {
+    if (!selectedCategory) return;
     playSound('start');
-    startTimerBase();
+    dispatch({ type: 'START', payload: { categoryId: selectedCategory } });
+  };
+
+  const handlePause = () => {
+    dispatch({ type: 'PAUSE' });
   };
 
   const handleResume = () => {
     playSound('start');
-    resumeTimerBase();
+    dispatch({ type: 'RESUME' });
   };
 
-  // Keyboard shortcuts for timer controls
+  const handleReset = () => {
+    playSound('reset');
+    dispatch({ type: 'RESET' });
+  };
+
+  const handleSwitchMode = (mode: TimerMode) => {
+    dispatch({ type: 'SWITCH_MODE', payload: { mode } });
+  };
+
   useKeyboardShortcuts(
     [
       {
@@ -78,8 +77,8 @@ export function PomodoroTimer({
         handler: () => {
           if (timerState === 'idle' && selectedCategory && categories.length > 0) {
             handleStart();
-          } else if (timerState === 'working' || timerState === 'break') {
-            pauseTimer();
+          } else if (timerState === 'running') {
+            handlePause();
           } else if (timerState === 'paused') {
             handleResume();
           }
@@ -88,7 +87,7 @@ export function PomodoroTimer({
       {
         key: 'r',
         handler: () => {
-          if (timerState === 'working' || timerState === 'break' || timerState === 'paused') {
+          if (timerState !== 'idle') {
             handleReset();
           }
         },
@@ -96,11 +95,6 @@ export function PomodoroTimer({
     ],
     isInitialized,
   );
-
-  const handleReset = () => {
-    playSound('reset');
-    resetTimer();
-  };
 
   if (!isInitialized) {
     return (
@@ -131,17 +125,16 @@ export function PomodoroTimer({
           timeLeft={timeLeft}
           timerState={timerState}
           currentMode={currentMode}
-          switchMode={switchMode}
+          switchMode={handleSwitchMode}
         />
 
         <TimerControls
           categories={categories}
           selectedCategory={selectedCategory}
           timerState={timerState}
-          isInitialized={isInitialized}
           onCategoryChange={onCategoryChange}
           onStart={handleStart}
-          onPause={pauseTimer}
+          onPause={handlePause}
           onResume={handleResume}
           onReset={handleReset}
         />

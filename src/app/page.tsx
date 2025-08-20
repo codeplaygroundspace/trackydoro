@@ -25,8 +25,6 @@ export default function Home() {
   const updateCategory = useStore((state) => state.updateCategory);
   const deleteCategory = useStore((state) => state.deleteCategory);
   const recordPomodoro = useStore((state) => state.recordPomodoro);
-  const pomodoroCount = useStore((state) => state.pomodoroCount);
-  const incrementPomodoroCount = useStore((state) => state.incrementPomodoroCount);
   const isLoading = useStore((state) => state.isLoading);
   const setLoading = useStore((state) => state.setLoading);
 
@@ -48,7 +46,6 @@ export default function Home() {
 
   const handlePomodoroComplete = (categoryId: string) => {
     recordPomodoro(categoryId);
-    incrementPomodoroCount();
   };
 
   const handleDeleteCategory = () => {
@@ -143,7 +140,6 @@ export default function Home() {
                 selectedCategory={selectedCategory}
                 onCategoryChange={setSelectedCategory}
                 onPomodoroComplete={handlePomodoroComplete}
-                pomodoroCount={pomodoroCount}
               />
 
               {/* Categories Section Header */}
