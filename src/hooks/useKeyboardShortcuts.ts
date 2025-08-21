@@ -23,9 +23,10 @@ export const useKeyboardShortcuts = (shortcuts: KeyboardShortcut[], enabled: boo
         event.target instanceof HTMLSelectElement;
 
       shortcuts.forEach((shortcut) => {
+        if (!shortcut.key) return;
         const keyMatches =
-          event.key.toLowerCase() === shortcut.key.toLowerCase() ||
-          event.code.toLowerCase() === shortcut.key.toLowerCase();
+          event.key?.toLowerCase() === shortcut.key.toLowerCase() ||
+          event.code?.toLowerCase() === shortcut.key.toLowerCase();
 
         if (!keyMatches) return;
 

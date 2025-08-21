@@ -3,7 +3,6 @@
 import Link from 'next/link';
 
 import { Clock3, GearIcon, OutlineKeyboard } from '@/components/icons';
-import { ThemeToggle } from '@/components/theme';
 
 interface AppHeaderProps {
   onKeyboardClick: () => void;
@@ -11,8 +10,8 @@ interface AppHeaderProps {
 }
 
 /**
- * AppHeader component displays the application header with logo, theme toggle, and buttons for keyboard shortcuts and settings.
- * It is a presentational component that receives click handlers as props.
+ * AppHeader component displays the application header with logo and settings.
+ * It is a presentational component
  */
 export default function AppHeader({ onKeyboardClick, onSettingsClick }: AppHeaderProps) {
   return (
@@ -24,7 +23,6 @@ export default function AppHeader({ onKeyboardClick, onSettingsClick }: AppHeade
         </h1>
       </Link>
       <div className="flex items-center gap-2">
-        <ThemeToggle />
         <button
           onClick={onKeyboardClick}
           className="hidden sm:block bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
@@ -35,7 +33,7 @@ export default function AppHeader({ onKeyboardClick, onSettingsClick }: AppHeade
         </button>
         <button
           onClick={onSettingsClick}
-          className="hidden sm:block bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+          className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
           aria-label="Open settings"
           title="Settings"
         >
