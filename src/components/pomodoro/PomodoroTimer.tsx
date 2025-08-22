@@ -5,7 +5,9 @@ import { useEffect } from 'react';
 import { useAudio } from '@/hooks/useAudio';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { usePomodoroStyles } from '@/hooks/usePomodoroStyles';
+import useTabClock from '@/hooks/useTabClock';
 import { useTimer } from '@/hooks/useTimer';
+import { formatTime } from '@/lib/date-utils';
 import { cn } from '@/lib/utils';
 import { Category, TimerMode } from '@/types';
 
@@ -33,6 +35,10 @@ export function PomodoroTimer({
   });
 
   const { timeLeft, timerState, mode: currentMode } = state;
+
+  const categoryName = categories.find((c) => c.id === state.selectedCategory)?.name;
+
+  useTabClock(formatTime(timeLeft), categoryName);
 
   const { cardClasses } = usePomodoroStyles(currentMode);
 
