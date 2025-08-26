@@ -24,14 +24,14 @@ export function TimerControls({
   onReset,
 }: TimerControlsProps) {
   return (
-    <div className="flex flex-col items-center gap-4 mb-6">
+    <div className="flex flex-col items-end gap-2">
       {categories.length > 0 ? (
         <select
           value={selectedCategory || ''}
           onChange={(e) => onCategoryChange(e.target.value)}
           disabled={timerState !== 'idle'}
           className={
-            'bg-secondary text-secondary-foreground px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 w-64 h-12 font-semibold'
+            'bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 text-xs font-medium'
           }
           aria-label="Select project for timer"
         >
@@ -45,16 +45,16 @@ export function TimerControls({
           ))}
         </select>
       ) : (
-        <div className="text-muted-foreground">Add a project to get started</div>
+        <div className="text-muted-foreground text-xs">Add a project to get started</div>
       )}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         {timerState === 'idle' && categories.length > 0 && (
           <button
             onClick={onStart}
             disabled={!selectedCategory}
             className={
-              'bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-64 h-12'
+              'bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-xs'
             }
             aria-label="Start timer (Spacebar)"
           >
@@ -66,7 +66,7 @@ export function TimerControls({
           <button
             onClick={onPause}
             className={
-              'bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12'
+              'bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer text-xs'
             }
             aria-label="Pause timer (Spacebar)"
           >
@@ -78,7 +78,7 @@ export function TimerControls({
           <button
             onClick={onResume}
             className={
-              'bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer w-64 h-12'
+              'bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer text-xs'
             }
             aria-label="Resume timer (Spacebar)"
           >

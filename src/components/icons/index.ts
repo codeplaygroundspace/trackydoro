@@ -1,10 +1,15 @@
+export { AnalyticsIcon } from './AnalyticsIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
 export { Clock3 } from './Clock3';
+export { CollapseIcon } from './CollapseIcon';
 export { EditIcon } from './EditIcon';
 export { GearIcon } from './GearIcon';
 export { MoonIcon } from './MoonIcon';
 export { OutlineKeyboard } from './OutlineKeyboard';
+export { PauseIcon } from './PauseIcon';
+export { PlayIcon } from './PlayIcon';
 export { PlusIcon } from './PlusIcon';
+export { ResetIcon } from './ResetIcon';
 export { SunIcon } from './SunIcon';
 export { TrashIcon } from './TrashIcon';

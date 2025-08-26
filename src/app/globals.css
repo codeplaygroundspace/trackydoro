@@ -41,41 +41,8 @@
   --category-orange: 68.1% 0.195 41.15;
 }
 
-/* Light Theme - High contrast and vibrant */
+/* Dark Theme - Default and only theme */
 :root {
-  --background: oklch(98.5% 0 0); /* slight off-white for softer feel */
-  --foreground: oklch(20% 0.02 280); /* very dark gray, almost black */
-
-  --card: oklch(100% 0 0); /* pure white for cards to pop */
-  --card-foreground: oklch(20% 0.02 280);
-
-  --popover: oklch(100% 0 0); /* white */
-  --popover-foreground: oklch(20% 0.02 280);
-
-  --primary: oklch(55% 0.29 265); /* deeper, more saturated blue */
-  --primary-foreground: oklch(100% 0 0); /* white */
-
-  --secondary: oklch(94% 0.01 280); /* light gray with slight blue tint */
-  --secondary-foreground: oklch(20% 0.02 280);
-
-  --muted: oklch(92% 0.01 280); /* medium light gray for empty states */
-  --muted-foreground: oklch(45% 0.02 280); /* darker gray for better contrast */
-
-  --accent: oklch(94% 0.01 280);
-  --accent-foreground: oklch(20% 0.02 280);
-
-  --destructive: oklch(60% 0.25 25); /* slightly darker red for better contrast */
-  --destructive-foreground: oklch(100% 0 0); /* white */
-
-  --border: oklch(90% 0.01 280); /* darker border for definition */
-  --input: oklch(96% 0.01 280); /* lighter input background */
-  --ring: oklch(55% 0.29 265);
-
-  --radius: 0.5rem;
-}
-
-/* Dark Theme - Sky-based color scheme */
-.dark {
   --background: var(--sky-950); /* main background */
   --foreground: var(--yellow-50); /* main light text */
 
@@ -104,11 +71,13 @@
   --input: var(--sky-700);
   --ring: var(--yellow-400);
 
-  /* Pomodoro card specific colors (Dark Theme) */
+  --radius: 0.5rem;
+
+  /* Pomodoro card specific colors */
   --pomodoro-red-bg-dark: oklch(55.06% 0.212 11.3 / 0.5);
   --pomodoro-green-bg-dark: oklch(63% 0.169 142.5 / 0.5);
 
-  /* Category color tokens (dark) — store OKLCH triple only */
+  /* Category color tokens — store OKLCH triple only */
   --category-emerald: 78.53% 0.147 162.03;
   --category-blue: 70.16% 0.2 265.52;
   --category-purple: 69.21% 0.187 283.71;
@@ -119,38 +88,6 @@
   --category-indigo: 65.98% 0.173 274.04;
   --category-lime: 84.6% 0.163 127.39;
   --category-orange: 78.1% 0.155 41.15;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--sky-950);
-    --foreground: var(--yellow-50);
-
-    --card: var(--sky-900);
-    --card-foreground: var(--yellow-50);
-
-    --popover: var(--sky-900);
-    --popover-foreground: var(--yellow-50);
-
-    --primary: var(--yellow-400);
-    --primary-foreground: var(--sky-950);
-
-    --secondary: var(--sky-700);
-    --secondary-foreground: var(--yellow-50);
-
-    --muted: var(--sky-700);
-    --muted-foreground: var(--sky-200);
-
-    --accent: var(--sky-700);
-    --accent-foreground: var(--yellow-50);
-
-    --destructive: var(--red-800);
-    --destructive-foreground: var(--yellow-50);
-
-    --border: var(--sky-300);
-    --input: var(--sky-700);
-    --ring: var(--yellow-400);
-  }
 }
 
 @theme inline {
@@ -182,6 +119,8 @@
   --color-pomodoro-red-bg-dark: var(--pomodoro-red-bg-dark);
   --color-pomodoro-green-bg-dark: var(--pomodoro-green-bg-dark);
 
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-timer: var(--font-press-start-2p), ui-monospace, monospace;
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 }
@@ -190,21 +129,15 @@ body {
   @apply bg-background text-foreground;
 }
 
-/* Smooth transitions for theme switching */
+/* Smooth transitions */
 * {
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease;
 }
 
-/* Enhanced shadows for light theme cards */
-:root .bg-card {
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
-}
-
-.dark .bg-card {
+/* Enhanced shadows for cards */
+.bg-card {
   box-shadow:
     0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);

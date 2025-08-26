@@ -1,12 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 import About from '@/components/About';
 import AppHeader from '@/components/AppHeader';
 import { CategoryForm, CategoryGrid } from '@/components/categories';
 import Footer from '@/components/Footer';
-import { PlusIcon } from '@/components/icons';
+import { CollapseIcon, PlusIcon } from '@/components/icons';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
 import { Settings } from '@/components/Settings';
 import { ConfirmDialog, KeyboardShortcuts, Modal } from '@/components/ui';
@@ -16,6 +17,8 @@ import { useStore } from '@/hooks/useStore';
 import { Category } from '@/types';
 
 export default function Home() {
+  const router = useRouter();
+
   // Get state and actions from Zustand store
   const categories = useStore((state) => state.categories);
   const categoryData = useStore((state) => state.categoryData);
@@ -33,6 +36,7 @@ export default function Home() {
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
 
   // Simulate initial loading
   useEffect(() => {
@@ -116,71 +120,102 @@ export default function Home() {
 
   return (
     <>
-      <main className="min-h-screen text-foreground p-4 md:p-8 relative" role="main">
-        {/* Gradient background */}
+      <main className="text-foreground relative" role="main">
+        {/* Wallpaper background */}
         <div className="fixed inset-0 bg-background">
-          <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 via-transparent to-transparent" />
-        </div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          {/* Header */}
-          <AppHeader
-            onKeyboardClick={() => setShowKeyboardShortcuts(true)}
-            onSettingsClick={() => setShowSettings(true)}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url(/img/wallpaper02.jpeg)' }}
           />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
 
+        {/* Header - Fixed at top */}
+        <div className="relative z-10 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <AppHeader
+              onKeyboardClick={() => setShowKeyboardShortcuts(true)}
+              onSettingsClick={() => setShowSettings(true)}
+              onAnalyticsClick={() => router.push('/analytics')}
+            />
+          </div>
+        </div>
+
+        {/* Full-height timer section */}
+        <div className="relative z-10 min-h-screen">
           {isLoading ? (
-            <>
+            <div className="min-h-screen flex items-center justify-center">
               <TimerSkeleton />
-              <CategoryGridSkeleton />
-            </>
+            </div>
           ) : (
-            <>
-              <PomodoroTimer
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-                onPomodoroComplete={handlePomodoroComplete}
-              />
+            <PomodoroTimer
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              onPomodoroComplete={handlePomodoroComplete}
+            />
+          )}
+        </div>
 
-              {/* Categories Section Header */}
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-foreground">
-                  Projects{' '}
-                  {categories.length > 0 && (
-                    <span className="text-muted-foreground">({categories.length})</span>
-                  )}
-                </h2>
-                <button
-                  onClick={() => setShowAddCategory(true)}
-                  className="flex items-center gap-2 bg-card hover:bg-card/70 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
-                  aria-label="Add new category (Cmd/Ctrl+N)"
-                >
-                  <PlusIcon className="w-4 h-4" />
-                  Add Project
-                </button>
-              </div>
+        {/* Projects section - Scrollable below timer */}
+        <div className="relative z-10 bg-background/95 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto p-4 md:p-8">
+            {!isLoading && (
+              <>
+                {/* Categories Section Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                      className="p-1 hover:bg-card/50 rounded transition-colors cursor-pointer"
+                      aria-label={isProjectsExpanded ? 'Collapse projects' : 'Expand projects'}
+                    >
+                      <CollapseIcon
+                        className="w-4 h-4 text-muted-foreground"
+                        isExpanded={isProjectsExpanded}
+                      />
+                    </button>
+                    <h2 className="text-lg font-semibold text-foreground">
+                      Projects{' '}
+                      {categories.length > 0 && (
+                        <span className="text-muted-foreground">({categories.length})</span>
+                      )}
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => setShowAddCategory(true)}
+                    className="flex items-center gap-2 bg-card hover:bg-card/70 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
+                    aria-label="Add new category (Cmd/Ctrl+N)"
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                    Add Project
+                  </button>
+                </div>
 
-              <CategoryGrid
-                categories={categories}
-                categoryData={categoryData}
-                editingCategory={editingCategory}
-                onEdit={setEditingCategory}
-                onDelete={setDeletingCategory}
-                editForm={(category) => (
-                  <CategoryForm
-                    initialValues={category}
-                    onSubmit={(name, colorKey, target) => {
-                      updateCategory(category.id, name, colorKey, target);
-                      setEditingCategory(null);
-                    }}
-                    onCancel={() => setEditingCategory(null)}
+                {isProjectsExpanded && (
+                  <CategoryGrid
+                    categories={categories}
+                    categoryData={categoryData}
+                    editingCategory={editingCategory}
+                    onEdit={setEditingCategory}
+                    onDelete={setDeletingCategory}
+                    editForm={(category) => (
+                      <CategoryForm
+                        initialValues={category}
+                        onSubmit={(name, colorKey, target) => {
+                          updateCategory(category.id, name, colorKey, target);
+                          setEditingCategory(null);
+                        }}
+                        onCancel={() => setEditingCategory(null)}
+                      />
+                    )}
                   />
                 )}
-              />
-              <About />
-              <Footer />
-            </>
-          )}
+                <About />
+                <Footer />
+              </>
+            )}
+          </div>
         </div>
 
         {/* Add Project Modal */}
