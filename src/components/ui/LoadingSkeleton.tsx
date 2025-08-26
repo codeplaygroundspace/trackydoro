@@ -12,14 +12,23 @@ export function LoadingSkeleton({ className = '' }: LoadingSkeletonProps) {
 
 export function TimerSkeleton() {
   return (
-    <div className="bg-card rounded-2xl p-8 mb-8 shadow-2xl border border-border">
+    <div className="min-h-screen flex flex-col justify-center items-center">
       <div className="text-center">
-        <LoadingSkeleton className="w-48 h-24 mx-auto mb-8" />
-        <LoadingSkeleton className="w-64 h-10 mx-auto mb-6" />
-        <div className="flex justify-center gap-8">
-          <LoadingSkeleton className="w-24 h-6" />
-          <LoadingSkeleton className="w-24 h-6" />
+        {/* Category dropdown skeleton */}
+        <LoadingSkeleton className="w-48 h-8 mx-auto mb-16" />
+
+        {/* Timer display skeleton */}
+        <LoadingSkeleton className="w-64 h-24 mx-auto mb-8" />
+
+        {/* Mode selection buttons skeleton */}
+        <div className="flex justify-center gap-2 mb-8">
+          <LoadingSkeleton className="w-16 h-8" />
+          <LoadingSkeleton className="w-20 h-8" />
+          <LoadingSkeleton className="w-20 h-8" />
         </div>
+
+        {/* Circular play button skeleton */}
+        <LoadingSkeleton className="w-16 h-16 rounded-full mx-auto" />
       </div>
     </div>
   );

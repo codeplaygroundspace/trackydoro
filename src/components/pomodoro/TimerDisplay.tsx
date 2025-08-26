@@ -61,58 +61,11 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
   };
 
   return (
-    <>
-      {/* Mode selection buttons */}
-      {switchMode && (
-        <div className="flex gap-2 justify-center mb-16">
-          <button
-            onClick={() => switchMode('pomodoro')}
-            disabled={timerState !== 'idle'}
-            className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              currentMode === 'pomodoro'
-                ? 'bg-secondary/50 text-secondary-foreground'
-                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-              timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-            )}
-            aria-label="Switch to Pomodoro mode"
-          >
-            Pomodoro
-          </button>
-          <button
-            onClick={() => switchMode('shortBreak')}
-            disabled={timerState !== 'idle'}
-            className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              currentMode === 'shortBreak'
-                ? 'bg-secondary/50 text-secondary-foreground'
-                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-              timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-            )}
-            aria-label="Switch to Short Break mode"
-          >
-            Short Break
-          </button>
-          <button
-            onClick={() => switchMode('longBreak')}
-            disabled={timerState !== 'idle'}
-            className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-              currentMode === 'longBreak'
-                ? 'bg-secondary/50 text-secondary-foreground'
-                : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-              timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-            )}
-            aria-label="Switch to Long Break mode"
-          >
-            Long Break
-          </button>
-        </div>
-      )}
-
+    <div className="text-center">
       <div className="relative inline-block">
         <div
           className={'text-7xl md:text-8xl font-black tabular-nums mb-16'}
+          style={{ fontFamily: 'var(--font-timer)' }}
           aria-label={`Timer showing ${minutes} minutes and ${seconds} seconds`}
         >
           {formatTime(timeLeft)}
@@ -123,6 +76,6 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
           {getStatusMessage()}
         </div>
       </div>
-    </>
+    </div>
   );
 }

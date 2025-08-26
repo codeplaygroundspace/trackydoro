@@ -1,30 +1,19 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
+import { Open_Sans, Press_Start_2P } from 'next/font/google';
 
-import { ThemeProvider } from '@/components/theme';
-
-const martianGrotesk = localFont({
-  src: [
-    {
-      path: './fonts/MartianGrotesk-VFVF.woff2',
-      weight: '100 900',
-      style: 'normal',
-    },
-    {
-      path: './fonts/MartianGrotesk-StdRg.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: './fonts/MartianGrotesk-StdBd.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-martian',
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  variable: '--font-open-sans',
   fallback: ['ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+});
+
+const pressStart2P = Press_Start_2P({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-press-start-2p',
+  fallback: ['ui-monospace', 'monospace'],
 });
 
 export const viewport = {
@@ -97,30 +86,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={martianGrotesk.variable}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${openSans.variable} ${pressStart2P.variable} dark`}
+    >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const theme = localStorage.getItem('trackydoro-theme') || 'dark';
-                if (theme === 'system') {
-                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                  document.documentElement.classList.add(systemTheme);
-                } else {
-                  document.documentElement.classList.add(theme);
-                }
-              } catch {}
-            `,
-          }}
-        />
       </head>
-      <body className={`${martianGrotesk.className} antialiased`}>
-        <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>
-      </body>
+      <body className={`${openSans.className} antialiased`}>{children}</body>
     </html>
   );
 }

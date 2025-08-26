@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
 import { Auth } from './Auth';
-import { ThemeToggle } from './theme';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -154,15 +153,6 @@ export function Settings({ onClose }: SettingsModalProps) {
           </button>
         </div>
       </form>
-
-      {/* Appearance Section */}
-      <div className="mb-6">
-        <h4 className="text-lg font-semibold mb-3">Appearance</h4>
-        <div className="p-4 border-border border rounded-lg flex items-center justify-between">
-          <span className="font-medium text-muted-foreground">Theme</span>
-          <ThemeToggle />
-        </div>
-      </div>
 
       {/* Account Section */}
       <div className="mb-6">
