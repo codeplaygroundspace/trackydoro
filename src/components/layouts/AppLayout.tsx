@@ -15,6 +15,7 @@ interface AppLayoutProps {
   className?: string;
   onKeyboardShortcuts?: () => void;
   onSettings?: () => void;
+  isHomePage?: boolean;
 }
 
 export const AppLayout = ({
@@ -24,6 +25,7 @@ export const AppLayout = ({
   className = '',
   onKeyboardShortcuts,
   onSettings,
+  isHomePage = false,
 }: AppLayoutProps) => {
   const router = useRouter();
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
@@ -54,6 +56,7 @@ export const AppLayout = ({
                 onSettings?.();
               }}
               onAnalyticsClick={() => router.push('/analytics')}
+              isHomePage={isHomePage}
             />
           </div>
         </div>
@@ -68,15 +71,20 @@ export const AppLayout = ({
           </div>
         )}
 
-        {/* Keyboard modal */}
-        <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
-          <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
-        </Modal>
+        {/* Modals - only rendered on home page */}
+        {isHomePage && (
+          <>
+            {/* Keyboard modal */}
+            <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
+              <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
+            </Modal>
 
-        {/* Settings modal */}
-        <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
-          <Settings onClose={() => setShowSettings(false)} />
-        </Modal>
+            {/* Settings modal */}
+            <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
+              <Settings onClose={() => setShowSettings(false)} />
+            </Modal>
+          </>
+        )}
       </main>
     </>
   );

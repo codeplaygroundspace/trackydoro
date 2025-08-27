@@ -4,10 +4,8 @@ import PageHeader from '@/components/PageHeader';
 export default function TermsPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Gradient background */}
-      <div className="fixed inset-0 bg-background">
-        <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 via-transparent to-transparent" />
-      </div>
+      {/* Main background */}
+      <div className="fixed inset-0 bg-background"></div>
 
       <main className="flex-grow text-foreground p-4 md:p-8 relative z-10">
         <div className="max-w-7xl mx-auto">

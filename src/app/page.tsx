@@ -4,8 +4,6 @@ import { useCallback, useState } from 'react';
 
 import { AppLayout } from '@/components/layouts';
 import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
-import { Settings } from '@/components/Settings';
-import { KeyboardShortcuts, Modal } from '@/components/ui';
 import { TimerSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAppLoading } from '@/hooks';
 import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -86,6 +84,7 @@ export default function Home() {
       showFooter={!isLoading}
       onKeyboardShortcuts={() => setShowKeyboardShortcuts(true)}
       onSettings={() => setShowSettings(true)}
+      isHomePage={true}
     >
       {/* Timer section - calculated height excluding header and footer */}
       <div
@@ -105,16 +104,6 @@ export default function Home() {
           />
         )}
       </div>
-
-      {/* Keyboard modal */}
-      <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
-        <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
-      </Modal>
-
-      {/* Settings modal */}
-      <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
-        <Settings onClose={() => setShowSettings(false)} />
-      </Modal>
     </AppLayout>
   );
 }

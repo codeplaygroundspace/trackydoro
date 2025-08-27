@@ -8,6 +8,7 @@ interface AppHeaderProps {
   onKeyboardClick: () => void;
   onSettingsClick: () => void;
   onAnalyticsClick: () => void;
+  isHomePage?: boolean;
 }
 
 /**
@@ -18,6 +19,7 @@ export default function AppHeader({
   onKeyboardClick,
   onSettingsClick,
   onAnalyticsClick,
+  isHomePage = true,
 }: AppHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-8">
@@ -26,30 +28,34 @@ export default function AppHeader({
         <h1 className="font-black text-foreground dark:text-primary tracking-wide">Trackydoro</h1>
       </Link>
       <div className="flex items-center gap-2">
-        <button
-          onClick={onKeyboardClick}
-          className="hidden sm:block bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-          aria-label="View keyboard shortcuts (Press ? key)"
-          title="Keyboard shortcuts (?)"
-        >
-          <OutlineKeyboard className="w-5 h-5 text-primary" />
-        </button>
-        <button
-          onClick={onAnalyticsClick}
-          className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-          aria-label="View analytics"
-          title="Analytics"
-        >
-          <AnalyticsIcon className="w-5 h-5 text-primary" />
-        </button>
-        <button
-          onClick={onSettingsClick}
-          className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-          aria-label="Open settings"
-          title="Settings"
-        >
-          <GearIcon className="w-5 h-5 text-primary" />
-        </button>
+        {isHomePage && (
+          <>
+            <button
+              onClick={onKeyboardClick}
+              className="hidden sm:block bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="View keyboard shortcuts (Press ? key)"
+              title="Keyboard shortcuts (?)"
+            >
+              <OutlineKeyboard className="w-5 h-5 text-primary" />
+            </button>
+            <button
+              onClick={onAnalyticsClick}
+              className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="View analytics"
+              title="Analytics"
+            >
+              <AnalyticsIcon className="w-5 h-5 text-primary" />
+            </button>
+            <button
+              onClick={onSettingsClick}
+              className="bg-card hover:bg-card/70 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="Open settings"
+              title="Settings"
+            >
+              <GearIcon className="w-5 h-5 text-primary" />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
