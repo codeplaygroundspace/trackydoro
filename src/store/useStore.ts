@@ -1,3 +1,18 @@
+/**
+ * Defines the global Zustand store for the application.
+ *
+ * This store serves as the single source of truth for shared application state
+ * that needs to be accessed by multiple, often unrelated, components. It
+ * handles state related to categories, user progress data, and selections.
+ *
+ * It uses the `persist` middleware from Zustand to automatically save the
+ * store's state to `localStorage`, ensuring data persistence across browser
+ * sessions.
+ *
+ * State that is local to a specific component or feature (e.g., the active
+ * timer's second-by-second countdown) is intentionally kept out of this store
+ * to optimize performance and maintain a clear separation of concerns.
+ */
 'use client';
 
 import { create } from 'zustand';
@@ -12,6 +27,7 @@ interface PomodoroStore {
   categories: Category[];
   categoryData: CategoryData[];
   selectedCategory: string;
+  pomodoroCount: number;
   isLoading: boolean;
 
   // Actions
@@ -20,6 +36,7 @@ interface PomodoroStore {
   deleteCategory: (id: string) => void;
   setSelectedCategory: (id: string) => void;
   recordPomodoro: (categoryId: string) => void;
+  incrementPomodoroCount: () => void;
   setLoading: (loading: boolean) => void;
 }
 
@@ -37,6 +54,7 @@ export const useStore = create<PomodoroStore>()(
       categories: DEFAULT_CATEGORIES,
       categoryData: [],
       selectedCategory: '',
+      pomodoroCount: 0,
       isLoading: false,
 
       // Actions
@@ -111,6 +129,10 @@ export const useStore = create<PomodoroStore>()(
 
           return { categoryData: updatedData };
         });
+      },
+
+      incrementPomodoroCount: () => {
+        set((state) => ({ pomodoroCount: state.pomodoroCount + 1 }));
       },
 
       setLoading: (loading) => set({ isLoading: loading }),
