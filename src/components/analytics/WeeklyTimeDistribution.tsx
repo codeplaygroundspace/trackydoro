@@ -26,9 +26,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-card/80 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-border/30">
-        <p className="text-sm font-semibold text-foreground">{data.name}</p>
-        <p className="text-sm" style={{ color: data.color }}>{`${data.hours}`}</p>
+      <div className="chart-tooltip">
+        <p className="chart-tooltip-title">{data.name}</p>
+        <p className="chart-tooltip-value">{data.hours}</p>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export function WeeklyTimeDistribution({ data }: WeeklyTimeDistributionProps) {
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               barCategoryGap="20%"
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.3)" />
+              <CartesianGrid strokeDasharray="3 3" className="chart-grid" />
               <XAxis
                 dataKey="name"
                 axisLine={false}

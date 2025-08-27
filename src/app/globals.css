@@ -1,83 +1,32 @@
 @import 'tailwindcss';
 
+/**
+ * BASE COLOR TOKENS
+ * Core color values used throughout the application
+ */
 :root {
-  /* Tailwind Sky Scale */
+  /* Core UI Colors */
+  --yellow-50: oklch(98.7% 0.026 102.212);
+  --sky-200: oklch(68.426% 0.09948 19.913);
+  --sky-300: oklch(39.042% 0.00004 271.152);
+  --sky-700: oklch(28.498% 0.03865 296.991);
+  --sky-900: oklch(29.657% 0.01086 293.316);
+  --sky-950: oklch(26.081% 0.0271 304.103);
 
-  --yellow-400: oklch(94.5% 0.129 101.54); /* accent */
-  --yellow-50: oklch(98.7% 0.026 102.212); /* text light */
-  --sky-200: oklch(74.354% 0.06808 232.444); /* text darker */
-  --sky-300: oklch(41.04% 0.08349 256.73); /* borders */
-  --sky-700: oklch(40.046% 0.09336 256.266); /* day background */
-  --sky-900: oklch(32.635% 0.06474 256.129); /* card background  */
-  --sky-950: oklch(0.28 0.05 257.59); /* main background */
-
-  --red-500: oklch(62.169% 0.19728 11.301); /* destructive for light theme */
-  --red-800: oklch(46.67% 0.15614 14.793); /* destructive for dark theme */
-
-  /* Tailwind Slate Scale (for light theme) */
-  --slate-50: oklch(98.44% 0.004 247.86);
-  --slate-100: oklch(96.78% 0.008 235.74);
-  --slate-200: oklch(92.71% 0.011 247.25);
-  --slate-500: oklch(52.52% 0.025 257.41);
-  --slate-950: oklch(10.5% 0.012 285.87);
-
-  /* Tailwind Blue Scale (for primary) */
   --blue-500: oklch(60.16% 0.24 265.52);
 
-  /* Pomodoro card specific colors */
-  --pomodoro-red-bg: oklch(62.17% 0.197 11.3 / 0.4);
-  --pomodoro-green-bg: oklch(70.3% 0.156 142.5 / 0.4);
+  --red-800: oklch(46.67% 0.15614 14.793);
 
-  /* Category color tokens (light) — store OKLCH triple only */
-  --category-emerald: 69.53% 0.177 162.03;
-  --category-blue: 60.16% 0.24 265.52;
-  --category-purple: 59.21% 0.227 283.71;
-  --category-amber: 74.56% 0.154 70.08;
-  --category-red: 62.8% 0.231 25.34;
-  --category-teal: 64.99% 0.153 180.72;
-  --category-pink: 66.93% 0.223 358.41;
-  --category-indigo: 55.98% 0.213 274.04;
-  --category-lime: 74.6% 0.213 127.39;
-  --category-orange: 68.1% 0.195 41.15;
+  /* Chart Colors */
+  --chart-accent-color: oklch(67.475% 0.17721 41.67);
+  --chart-grid-color: oklch(54.553% 0.07018 44.408);
 }
 
-/* Dark Theme - Default and only theme */
+/**
+ * CATEGORY COLORS
+ * Color tokens for project categories
+ */
 :root {
-  --background: var(--sky-950); /* main background */
-  --foreground: var(--yellow-50); /* main light text */
-
-  --card: var(--sky-900); /* background card*/
-  --card-foreground: var(--yellow-50);
-
-  --popover: var(--sky-900);
-  --popover-foreground: var(--yellow-50);
-
-  --primary: var(--yellow-400);
-  --primary-foreground: var(--sky-950);
-
-  --secondary: var(--sky-700);
-  --secondary-foreground: var(--yellow-50);
-
-  --muted: var(--sky-700);
-  --muted-foreground: var(--sky-200);
-
-  --accent: var(--sky-700);
-  --accent-foreground: var(--yellow-50);
-
-  --destructive: var(--red-800);
-  --destructive-foreground: var(--yellow-50);
-
-  --border: var(--sky-300);
-  --input: var(--sky-700);
-  --ring: var(--yellow-400);
-
-  --radius: 0.5rem;
-
-  /* Pomodoro card specific colors */
-  --pomodoro-red-bg-dark: oklch(55.06% 0.212 11.3 / 0.5);
-  --pomodoro-green-bg-dark: oklch(63% 0.169 142.5 / 0.5);
-
-  /* Category color tokens — store OKLCH triple only */
   --category-emerald: 78.53% 0.147 162.03;
   --category-blue: 70.16% 0.2 265.52;
   --category-purple: 69.21% 0.187 283.71;
@@ -90,8 +39,56 @@
   --category-orange: 78.1% 0.155 41.15;
 }
 
+/**
+ * THEME VARIABLES
+ * Semantic color mappings for the application
+ */
+:root {
+  /* Core UI */
+  --background: var(--sky-950);
+  --foreground: var(--yellow-50);
+
+  --card: var(--sky-900);
+  --card-foreground: var(--yellow-50);
+
+  --popover: var(--sky-900);
+  --popover-foreground: var(--yellow-50);
+
+  /* Interactive Elements */
+  --primary: oklch(75.19% 0.03021 1.462);
+  --primary-foreground: var(--yellow-50);
+
+  --secondary: var(--sky-700);
+  --secondary-foreground: var(--yellow-50);
+
+  --muted: oklch(45% 0.02 0);
+  --muted-foreground: oklch(80% 0.02 0);
+
+  --accent: oklch(45.732% 0.07872 164.794);
+  --accent-foreground: var(--yellow-50);
+
+  --destructive: var(--red-800);
+  --destructive-foreground: var(--yellow-50);
+
+  /* Borders and Focus */
+  --border: var(--sky-300);
+  --input: var(--sky-700);
+  --ring: oklch(60% 0.04 0);
+
+  --radius: 0.5rem;
+
+  /* Fonts */
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-timer: var(--font-press-start-2p), ui-monospace, monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+/**
+ * TAILWIND THEME MAPPING
+ * Maps CSS variables to Tailwind theme
+ */
 @theme inline {
-  /* Use OKLCH colors directly for Tailwind */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -112,19 +109,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-sky-700: var(--sky-700);
-
-  /* Pomodoro Specific Mappings */
-  --color-pomodoro-red-bg: var(--pomodoro-red-bg);
-  --color-pomodoro-green-bg: var(--pomodoro-green-bg);
-  --color-pomodoro-red-bg-dark: var(--pomodoro-red-bg-dark);
-  --color-pomodoro-green-bg-dark: var(--pomodoro-green-bg-dark);
-
-  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-timer: var(--font-press-start-2p), ui-monospace, monospace;
-  --font-mono:
-    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
+/**
+ * BASE STYLES
+ */
 body {
   @apply bg-background text-foreground;
 }
@@ -136,6 +125,9 @@ body {
     border-color 0.3s ease;
 }
 
+/**
+ * UTILITY CLASSES
+ */
 /* Enhanced shadows for cards */
 .bg-card {
   box-shadow:
@@ -154,4 +146,43 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/**
+ * CHART STYLES
+ */
+.chart-tooltip {
+  @apply bg-card/90 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-border/50;
+}
+
+.chart-tooltip-title {
+  @apply text-sm font-bold text-foreground;
+}
+
+.chart-tooltip-value {
+  @apply text-sm font-semibold;
+  color: var(--chart-accent-color);
+}
+
+.chart-orange-stroke {
+  stroke: var(--chart-accent-color);
+  stroke-width: 3;
+}
+
+.chart-orange-fill-gradient-start {
+  stop-color: var(--chart-accent-color);
+  stop-opacity: 0.9;
+}
+
+.chart-orange-fill-gradient-end {
+  stop-color: var(--chart-accent-color);
+  stop-opacity: 0.2;
+}
+
+.chart-grid {
+  stroke: var(--chart-grid-color);
+}
+
+.chart-bar {
+  fill: var(--chart-accent-color);
 }

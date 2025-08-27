@@ -1,14 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-import { ProjectDistribution, StatCard, WeeklyChart } from '@/components/analytics';
+import {
+  PeakProductivityTimes,
+  StatCard,
+  WeeklyChart,
+  WeeklyTimeDistribution,
+} from '@/components/analytics';
 import { CategoryForm, CategoryGrid } from '@/components/categories';
-import { ChevronLeftIcon, CollapseIcon, PlusIcon } from '@/components/icons';
-import { AppLayout } from '@/components/layouts';
-import { Settings } from '@/components/Settings';
-import { ConfirmDialog, KeyboardShortcuts, Modal } from '@/components/ui';
+import Footer from '@/components/Footer';
+import { PlusIcon } from '@/components/icons';
+import PageHeader from '@/components/PageHeader';
+import { ConfirmDialog, Modal } from '@/components/ui';
 import { CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAppLoading } from '@/hooks';
 import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -16,8 +20,6 @@ import { useStore } from '@/store/useStore';
 import { Category } from '@/types';
 
 export default function Analytics() {
-  const router = useRouter();
-
   // Get state and actions from Zustand store
   const categories = useStore((state) => state.categories);
   const categoryData = useStore((state) => state.categoryData);
@@ -34,9 +36,6 @@ export default function Analytics() {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
-  const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
-  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
 
   const handleDeleteCategory = () => {
     if (deletingCategory) {
@@ -154,30 +153,49 @@ export default function Analytics() {
       .sort((a, b) => b.minutes - a.minutes) // Sort by most time spent
       .slice(0, 5); // Show max 5 projects
 
-    return { todaysStats, weeklyData, projectData };
-  };
+    // Generate hourly productivity data
+    // In a real app, this would come from actual timestamps of completed pomodoros
+    // For now, we'll generate sample data that looks realistic
+    const hourlyData = [];
 
-  const { todaysStats, weeklyData, projectData } = generateAnalyticsData();
+    // Generate 24 hours of data
+    for (let i = 0; i < 24; i++) {
+      // Format hour for display (e.g., "9 AM", "2 PM")
+      const displayHour =
+        i === 0 ? '12 AM' : i < 12 ? `${i} AM` : i === 12 ? '12 PM' : `${i - 12} PM`;
 
-  // Development helper: Add sample data if no pomodoros have been completed yet
-  const addSampleData = () => {
-    if (process.env.NODE_ENV === 'development') {
-      const today = new Date().toISOString().split('T')[0];
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      // Hour for data key (00, 01, etc.)
+      const hour = i.toString().padStart(2, '0');
 
-      // Add some sample pomodoros for different categories
-      recordPomodoro('1'); // Study
-      recordPomodoro('1');
-      recordPomodoro('2'); // Work
-      recordPomodoro('2');
-      recordPomodoro('2');
-      recordPomodoro('3'); // Exercise
+      // Generate a realistic pattern with higher productivity during work hours
+      // and lower productivity in early morning/late night
+      let count = 0;
+
+      if (i >= 9 && i <= 11) {
+        // Morning peak (9 AM - 11 AM)
+        count = Math.floor(Math.random() * 3) + 2; // 2-4 pomodoros
+      } else if (i >= 14 && i <= 16) {
+        // Afternoon peak (2 PM - 4 PM)
+        count = Math.floor(Math.random() * 3) + 1; // 1-3 pomodoros
+      } else if (i >= 6 && i <= 20) {
+        // Regular work hours (6 AM - 8 PM)
+        count = Math.floor(Math.random() * 2); // 0-1 pomodoros
+      } else {
+        // Late night/early morning (9 PM - 5 AM)
+        count = 0; // No pomodoros
+      }
+
+      hourlyData.push({
+        hour,
+        displayHour,
+        count,
+      });
     }
+
+    return { todaysStats, weeklyData, projectData, hourlyData };
   };
 
-  const { modifierKey } = useGlobalKeyboardShortcuts();
+  const { todaysStats, weeklyData, projectData, hourlyData } = generateAnalyticsData();
 
   // Handle category navigation with arrow keys
   const handleCategoryNavigation = useCallback(
@@ -198,6 +216,8 @@ export default function Analytics() {
     [categories, selectedCategory, setSelectedCategory],
   );
 
+  const { modifierKey } = useGlobalKeyboardShortcuts();
+
   // Keyboard shortcuts for category management
   useKeyboardShortcuts(
     [
@@ -215,14 +235,6 @@ export default function Analytics() {
         key: 'ArrowDown',
         handler: () => handleCategoryNavigation('down'),
       },
-      {
-        key: '?',
-        handler: () => setShowKeyboardShortcuts(true),
-      },
-      {
-        key: 's',
-        handler: () => setShowSettings(true),
-      },
       // Number keys for quick category selection
       ...Array.from({ length: 9 }, (_, i) => ({
         key: String(i + 1),
@@ -237,129 +249,82 @@ export default function Analytics() {
   );
 
   return (
-    <AppLayout
-      onKeyboardShortcuts={() => setShowKeyboardShortcuts(true)}
-      onSettings={() => setShowSettings(true)}
-    >
-      {/* Analytics Content */}
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto p-4 md:p-8">
-          {/* Back button and page title */}
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2 bg-card hover:bg-card/70 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
-              aria-label="Back to timer"
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-              Back to Timer
-            </button>
-            <h1 className="text-2xl font-bold text-foreground">Analytics & Projects</h1>
-          </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Main background */}
+      <div className="fixed inset-0 bg-background"></div>
 
-          {!isLoading ? (
-            <>
-              {/* Projects Section */}
-              <div className="bg-background/95 backdrop-blur-sm rounded-lg p-6 mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                      className="p-1 hover:bg-card/50 rounded transition-colors cursor-pointer"
-                      aria-label={isProjectsExpanded ? 'Collapse projects' : 'Expand projects'}
-                    >
-                      <CollapseIcon
-                        className="w-4 h-4 text-muted-foreground"
-                        isExpanded={isProjectsExpanded}
-                      />
-                    </button>
-                    <h2 className="text-lg font-semibold text-foreground">
-                      Projects{' '}
-                      {categories.length > 0 && (
-                        <span className="text-muted-foreground">({categories.length})</span>
+      <main className="flex-grow text-foreground p-4 md:p-8 relative">
+        <div className="max-w-7xl mx-auto">
+          <PageHeader />
+
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
+            </div>
+
+            {!isLoading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Projects */}
+                <div className="lg:col-span-1 space-y-6">
+                  <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-border/20">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-semibold text-foreground">
+                        Projects ({categories.length})
+                      </h2>
+                      <button
+                        onClick={() => setShowAddCategory(true)}
+                        className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
+                        aria-label="Add new category (Cmd/Ctrl+N)"
+                      >
+                        <PlusIcon className="w-4 h-4" />
+                        Add
+                      </button>
+                    </div>
+                    <CategoryGrid
+                      categories={categories}
+                      categoryData={categoryData}
+                      editingCategory={editingCategory}
+                      onEdit={setEditingCategory}
+                      onDelete={setDeletingCategory}
+                      editForm={(category: Category) => (
+                        <CategoryForm
+                          initialValues={category}
+                          onSubmit={(name, colorKey, target) => {
+                            updateCategory(category.id, name, colorKey, target);
+                            setEditingCategory(null);
+                          }}
+                          onCancel={() => setEditingCategory(null)}
+                        />
                       )}
-                    </h2>
+                    />
                   </div>
-                  <button
-                    onClick={() => setShowAddCategory(true)}
-                    className="flex items-center gap-2 bg-card hover:bg-card/70 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer text-sm font-medium"
-                    aria-label="Add new category (Cmd/Ctrl+N)"
-                  >
-                    <PlusIcon className="w-4 h-4" />
-                    Add Project
-                  </button>
                 </div>
 
-                {isProjectsExpanded && (
-                  <CategoryGrid
-                    categories={categories}
-                    categoryData={categoryData}
-                    editingCategory={editingCategory}
-                    onEdit={setEditingCategory}
-                    onDelete={setDeletingCategory}
-                    editForm={(category) => (
-                      <CategoryForm
-                        initialValues={category}
-                        onSubmit={(name, colorKey, target) => {
-                          updateCategory(category.id, name, colorKey, target);
-                          setEditingCategory(null);
-                        }}
-                        onCancel={() => setEditingCategory(null)}
-                      />
-                    )}
-                  />
-                )}
-              </div>
-
-              {/* Analytics Dashboard */}
-              <div className="space-y-6">
-                {/* Today's Summary */}
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground mb-4">
-                    Today&apos;s Summary
-                  </h2>
+                {/* Right Column: Analytics */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Today's Summary */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <StatCard title="Focus Time" value={todaysStats.focusTime} icon="⏱️" />
                     <StatCard title="Pomodoros" value={todaysStats.pomodoros} icon="🍅" />
                     <StatCard title="Projects" value={todaysStats.projects} icon="📝" />
                     <StatCard title="Streak" value={todaysStats.streak} icon="🔥" />
                   </div>
-                </div>
 
-                {/* Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Charts */}
                   <WeeklyChart data={weeklyData} />
-                  {projectData.length > 0 && <ProjectDistribution data={projectData} />}
+                  <WeeklyTimeDistribution data={projectData} />
+                  <PeakProductivityTimes data={hourlyData} />
                 </div>
-
-                {projectData.length === 0 && (
-                  <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                    <div className="text-center py-12 text-muted-foreground">
-                      <div className="text-6xl mb-4">📊</div>
-                      <div className="text-xl">No Analytics Data Yet</div>
-                      <div className="text-sm mt-2">
-                        Complete some pomodoros to see your analytics and progress
-                      </div>
-                      {process.env.NODE_ENV === 'development' && (
-                        <button
-                          onClick={addSampleData}
-                          className="mt-4 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors text-sm"
-                        >
-                          Add Sample Data (Dev Only)
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
-            </>
-          ) : (
-            <div className="space-y-6">
-              <CategoryGridSkeleton />
-            </div>
-          )}
+            ) : (
+              <div className="space-y-6">
+                <CategoryGridSkeleton />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+        <Footer />
+      </main>
 
       {/* Add Project Modal */}
       <Modal isOpen={showAddCategory} onClose={() => setShowAddCategory(false)}>
@@ -387,16 +352,6 @@ export default function Analytics() {
         }
         confirmText="Delete"
       />
-
-      {/* Keyboard modal */}
-      <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
-        <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
-      </Modal>
-
-      {/* Settings modal */}
-      <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
-        <Settings onClose={() => setShowSettings(false)} />
-      </Modal>
-    </AppLayout>
+    </div>
   );
 }
