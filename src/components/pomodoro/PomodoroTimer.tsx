@@ -118,7 +118,7 @@ export function PomodoroTimer({
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center">
       <div>
         {/* Category dropdown at top */}
         <div className="flex justify-center mb-16">
