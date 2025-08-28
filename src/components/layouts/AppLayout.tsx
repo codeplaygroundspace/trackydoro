@@ -16,6 +16,10 @@ interface AppLayoutProps {
   onKeyboardShortcuts?: () => void;
   onSettings?: () => void;
   isHomePage?: boolean;
+  showKeyboardShortcutsModal?: boolean;
+  showSettingsModal?: boolean;
+  onCloseKeyboardShortcuts?: () => void;
+  onCloseSettings?: () => void;
 }
 
 export const AppLayout = ({
@@ -26,10 +30,12 @@ export const AppLayout = ({
   onKeyboardShortcuts,
   onSettings,
   isHomePage = false,
+  showKeyboardShortcutsModal = false,
+  showSettingsModal = false,
+  onCloseKeyboardShortcuts = () => {},
+  onCloseSettings = () => {},
 }: AppLayoutProps) => {
   const router = useRouter();
-  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <>
@@ -46,18 +52,7 @@ export const AppLayout = ({
         {/* Header - Fixed at top */}
         <div className="relative z-10 p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
-            <AppHeader
-              onKeyboardClick={() => {
-                setShowKeyboardShortcuts(true);
-                onKeyboardShortcuts?.();
-              }}
-              onSettingsClick={() => {
-                setShowSettings(true);
-                onSettings?.();
-              }}
-              onAnalyticsClick={() => router.push('/analytics')}
-              isHomePage={isHomePage}
-            />
+            <AppHeader isHomePage={isHomePage} />
           </div>
         </div>
 
@@ -75,13 +70,13 @@ export const AppLayout = ({
         {isHomePage && (
           <>
             {/* Keyboard modal */}
-            <Modal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)}>
-              <KeyboardShortcuts onClose={() => setShowKeyboardShortcuts(false)} />
+            <Modal isOpen={showKeyboardShortcutsModal} onClose={onCloseKeyboardShortcuts}>
+              <KeyboardShortcuts onClose={onCloseKeyboardShortcuts} />
             </Modal>
 
             {/* Settings modal */}
-            <Modal isOpen={showSettings} onClose={() => setShowSettings(false)}>
-              <Settings onClose={() => setShowSettings(false)} />
+            <Modal isOpen={showSettingsModal} onClose={onCloseSettings}>
+              <Settings onClose={onCloseSettings} />
             </Modal>
           </>
         )}
