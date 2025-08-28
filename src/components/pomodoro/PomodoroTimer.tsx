@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { PauseIcon, PlayIcon, ResetIcon } from '@/components/icons';
 import { useAudio } from '@/hooks/useAudio';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import useTabClock from '@/hooks/useTabClock';
 import { useTimer } from '@/hooks/useTimer';
 import { formatTime } from '@/lib/date-utils';
-import { cn } from '@/lib/utils';
-import { Category, TimerMode } from '@/types';
+import { Category, TimerMode, TimerState } from '@/types';
 
-import { TimerControls } from './TimerControls';
+import { CategoryDropdown } from './CategoryDropdown';
+import { ModeSelector } from './ModeSelector';
+import { TimerControlButtons } from './TimerControlButtons';
 import { TimerDisplay } from './TimerDisplay';
 
 interface PomodoroTimerProps {
@@ -19,6 +19,7 @@ interface PomodoroTimerProps {
   selectedCategory: string;
   onCategoryChange: (categoryId: string) => void;
   onPomodoroComplete: (categoryId: string) => void;
+  onTimerStateChange?: (timerState: TimerState) => void;
 }
 
 export function PomodoroTimer({
@@ -26,6 +27,7 @@ export function PomodoroTimer({
   selectedCategory,
   onCategoryChange,
   onPomodoroComplete,
+  onTimerStateChange,
 }: PomodoroTimerProps) {
   const { playSound } = useAudio();
 
@@ -39,6 +41,13 @@ export function PomodoroTimer({
   const categoryName = categories.find((c) => c.id === state.selectedCategory)?.name;
 
   useTabClock(formatTime(timeLeft), categoryName);
+
+  // Notify parent component of timer state changes
+  useEffect(() => {
+    if (onTimerStateChange) {
+      onTimerStateChange(timerState);
+    }
+  }, [timerState, onTimerStateChange]);
 
   // Effect to handle category selection persistence from the timer state
   useEffect(() => {
@@ -54,12 +63,16 @@ export function PomodoroTimer({
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (timerState === 'running' || timerState === 'paused') {
+        // Modern browsers require interaction with the page before showing the dialog
+        // and ignore custom messages for security reasons
+        const message = 'You have an active timer session. Changes may be lost if you leave.';
         e.preventDefault();
-        e.returnValue = 'Changes you made may not be saved.';
-        return 'Reload site?';
+        e.returnValue = message; // Required for Chrome
+        return message; // For older browsers
       }
     };
 
+    // Add the event listener
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
@@ -139,137 +152,35 @@ export function PomodoroTimer({
       <div>
         {/* Category dropdown at top */}
         <div className="flex justify-center mb-16">
-          {categories.length > 0 ? (
-            <select
-              value={selectedCategory || ''}
-              onChange={(e) => onCategoryChange(e.target.value)}
-              disabled={timerState !== 'idle'}
-              className={
-                'bg-secondary text-secondary-foreground px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 text-xs font-medium'
-              }
-              aria-label="Select project for timer"
-            >
-              <option value="" disabled>
-                Select a project
-              </option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <div className="text-muted-foreground text-xs">Add a project to get started</div>
-          )}
+          <CategoryDropdown
+            categories={categories}
+            selectedCategory={selectedCategory}
+            timerState={timerState}
+            onCategoryChange={onCategoryChange}
+          />
         </div>
 
         <TimerDisplay timeLeft={timeLeft} timerState={timerState} currentMode={currentMode} />
 
         {/* Mode selection buttons below timer */}
         {handleSwitchMode && (
-          <div className="flex justify-center gap-2 mb-8">
-            <button
-              onClick={() => handleSwitchMode('pomodoro')}
-              disabled={timerState !== 'idle'}
-              className={cn(
-                'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
-                currentMode === 'pomodoro'
-                  ? 'bg-secondary/50 text-secondary-foreground'
-                  : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-                timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-              )}
-              aria-label="Switch to Focus mode"
-            >
-              Focus
-            </button>
-            <button
-              onClick={() => handleSwitchMode('shortBreak')}
-              disabled={timerState !== 'idle'}
-              className={cn(
-                'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
-                currentMode === 'shortBreak'
-                  ? 'bg-secondary/50 text-secondary-foreground'
-                  : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-                timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-              )}
-              aria-label="Switch to Short Break mode"
-            >
-              Short Break
-            </button>
-            <button
-              onClick={() => handleSwitchMode('longBreak')}
-              disabled={timerState !== 'idle'}
-              className={cn(
-                'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
-                currentMode === 'longBreak'
-                  ? 'bg-secondary/50 text-secondary-foreground'
-                  : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
-                timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-              )}
-              aria-label="Switch to Long Break mode"
-            >
-              Long Break
-            </button>
-          </div>
+          <ModeSelector
+            currentMode={currentMode}
+            timerState={timerState}
+            onSwitchMode={handleSwitchMode}
+          />
         )}
 
         {/* Timer control buttons below the timer */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-4">
-            {/* Main control button */}
-            <div>
-              {timerState === 'idle' && categories.length > 0 && (
-                <button
-                  onClick={handleStart}
-                  disabled={!selectedCategory}
-                  className={
-                    'bg-white/40 hover:bg-white/20 text-white rounded-full font-semibold transition-all duration-200 transform shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-16 h-16 flex items-center justify-center'
-                  }
-                  aria-label="Start timer (Spacebar)"
-                >
-                  <PlayIcon className="size-8 text-white" />
-                </button>
-              )}
-
-              {timerState === 'running' && (
-                <button
-                  onClick={handlePause}
-                  className={
-                    'bg-white/40 hover:bg-white/20 text-white rounded-full font-semibold transition-all duration-200 transform shadow-lg cursor-pointer w-16 h-16 flex items-center justify-center'
-                  }
-                  aria-label="Pause timer (Spacebar)"
-                >
-                  <PauseIcon className="size-8 text-white" />
-                </button>
-              )}
-
-              {timerState === 'paused' && (
-                <button
-                  onClick={handleResume}
-                  className={
-                    'bg-white/40 hover:bg-white/20 text-white rounded-full font-semibold transition-all duration-200 transform shadow-lg cursor-pointer w-16 h-16 flex items-center justify-center'
-                  }
-                  aria-label="Resume timer (Spacebar)"
-                >
-                  <PlayIcon className="size-8 text-white" />
-                </button>
-              )}
-            </div>
-
-            {/* Reset button */}
-            {timerState === 'paused' && (
-              <button
-                onClick={handleReset}
-                className={
-                  'bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-200 transform shadow-lg cursor-pointer w-12 h-12 flex items-center justify-center'
-                }
-                aria-label="Reset timer"
-              >
-                <ResetIcon className="w-4 h-4 text-white" />
-              </button>
-            )}
-          </div>
-        </div>
+        <TimerControlButtons
+          timerState={timerState}
+          hasCategories={categories.length > 0}
+          selectedCategory={selectedCategory}
+          onStart={handleStart}
+          onPause={handlePause}
+          onResume={handleResume}
+          onReset={handleReset}
+        />
       </div>
     </div>
   );

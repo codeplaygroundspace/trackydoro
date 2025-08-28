@@ -17,6 +17,13 @@
 
   --red-800: oklch(46.67% 0.15614 14.793);
 
+  /* Previously hardcoded colors now as base tokens */
+  --cream-50: oklch(71.811% 0.07708 4.282); /* previously hardcoded primary */
+  --gray-600: oklch(45% 0.02 0); /* previously hardcoded muted */
+  --gray-300: oklch(80% 0.02 0); /* previously hardcoded muted-foreground */
+  --teal-700: oklch(45.732% 0.07872 164.794); /* previously hardcoded accent */
+  --gray-400: oklch(60% 0.04 0); /* previously hardcoded ring */
+
   /* Chart Colors */
   --chart-accent-color: oklch(67.475% 0.17721 41.67);
   --chart-grid-color: oklch(54.553% 0.07018 44.408);
@@ -55,16 +62,16 @@
   --popover-foreground: var(--yellow-50);
 
   /* Interactive Elements */
-  --primary: oklch(75.19% 0.03021 1.462);
+  --primary: var(--cream-50);
   --primary-foreground: var(--yellow-50);
 
   --secondary: var(--sky-700);
   --secondary-foreground: var(--yellow-50);
 
-  --muted: oklch(45% 0.02 0);
-  --muted-foreground: oklch(80% 0.02 0);
+  --muted: var(--gray-600);
+  --muted-foreground: var(--gray-300);
 
-  --accent: oklch(45.732% 0.07872 164.794);
+  --accent: var(--teal-700);
   --accent-foreground: var(--yellow-50);
 
   --destructive: var(--red-800);
@@ -73,7 +80,7 @@
   /* Borders and Focus */
   --border: var(--sky-300);
   --input: var(--sky-700);
-  --ring: oklch(60% 0.04 0);
+  --ring: var(--gray-400);
 
   --radius: 0.5rem;
 
