@@ -50,6 +50,23 @@ export function PomodoroTimer({
     }
   }, [isInitialized, state.selectedCategory, categories, onCategoryChange]);
 
+  // Effect to show browser alert when refreshing page with active timer
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (timerState === 'running' || timerState === 'paused') {
+        e.preventDefault();
+        e.returnValue = 'Changes you made may not be saved.';
+        return 'Reload site?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [timerState]);
+
   const handleStart = () => {
     if (!selectedCategory) return;
     playSound('start');
