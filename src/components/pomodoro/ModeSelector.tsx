@@ -18,8 +18,8 @@ export function ModeSelector({ currentMode, timerState, onSwitchMode }: ModeSele
         className={cn(
           'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
           currentMode === 'pomodoro'
-            ? 'bg-secondary/50 text-secondary-foreground'
-            : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
+            ? 'bg-secondary/50 text-secondary-foreground border border-foreground'
+            : 'text-secondary-foreground/70 hover:bg-secondary/90 hover:text-secondary-foreground border border-foreground/10',
           timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         )}
         aria-label="Switch to Focus mode"
@@ -32,8 +32,8 @@ export function ModeSelector({ currentMode, timerState, onSwitchMode }: ModeSele
         className={cn(
           'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
           currentMode === 'shortBreak'
-            ? 'bg-secondary/50 text-secondary-foreground'
-            : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
+            ? 'bg-secondary/50 text-secondary-foreground border border-foreground'
+            : 'text-secondary-foreground/70 hover:bg-secondary/90 hover:text-secondary-foreground border border-foreground/10',
           timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         )}
         aria-label="Switch to Short Break mode"
@@ -46,8 +46,8 @@ export function ModeSelector({ currentMode, timerState, onSwitchMode }: ModeSele
         className={cn(
           'px-4 py-2 text-xs font-medium rounded-lg transition-colors',
           currentMode === 'longBreak'
-            ? 'bg-secondary/50 text-secondary-foreground'
-            : 'text-secondary-foreground/70 hover:bg-secondary/20 hover:text-secondary-foreground',
+            ? 'bg-secondary/50 text-secondary-foreground border border-foreground'
+            : 'text-secondary-foreground/70 hover:bg-secondary/90 hover:text-secondary-foreground border border-foreground/10',
           timerState !== 'idle' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         )}
         aria-label="Switch to Long Break mode"
