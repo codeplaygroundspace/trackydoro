@@ -1,7 +1,15 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
-import { Open_Sans, Press_Start_2P } from 'next/font/google';
+import {
+  Fira_Code,
+  Open_Sans,
+  Orbitron,
+  Press_Start_2P,
+  Rubik_Mono_One,
+  Share_Tech_Mono,
+  VT323,
+} from 'next/font/google';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -13,6 +21,39 @@ const pressStart2P = Press_Start_2P({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-press-start-2p',
+  fallback: ['ui-monospace', 'monospace'],
+});
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  fallback: ['ui-monospace', 'monospace'],
+});
+
+const rubikMonoOne = Rubik_Mono_One({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-rubik-mono-one',
+  fallback: ['ui-monospace', 'monospace'],
+});
+
+const shareTechMono = Share_Tech_Mono({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-share-tech-mono',
+  fallback: ['ui-monospace', 'monospace'],
+});
+
+const vt323 = VT323({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-vt323',
+  fallback: ['ui-monospace', 'monospace'],
+});
+
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-fira-code',
   fallback: ['ui-monospace', 'monospace'],
 });
 
@@ -89,7 +130,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${openSans.variable} ${pressStart2P.variable} dark`}
+      className={`${openSans.variable} ${pressStart2P.variable} ${orbitron.variable} ${rubikMonoOne.variable} ${shareTechMono.variable} ${vt323.variable} ${firaCode.variable} dark`}
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
