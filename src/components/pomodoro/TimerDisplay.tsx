@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { formatTime } from '@/lib/date-utils';
 import { cn } from '@/lib/utils';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { TimerMode, TimerState } from '@/types';
 
 interface TimerDisplayProps {
@@ -14,6 +15,7 @@ interface TimerDisplayProps {
 }
 
 export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: TimerDisplayProps) {
+  const { timerFont } = useSettingsStore();
   const prevTimeRef = useRef(timeLeft);
   const prevStateRef = useRef(timerState);
 
@@ -65,7 +67,20 @@ export function TimerDisplay({ timeLeft, timerState, currentMode, switchMode }: 
       <div className="relative inline-block">
         <div
           className={'text-7xl md:text-8xl font-black tabular-nums mb-16'}
-          style={{ fontFamily: 'var(--font-timer)' }}
+          style={{
+            fontFamily:
+              timerFont === 'Press Start 2P'
+                ? 'var(--font-press-start-2p)'
+                : timerFont === 'VT323'
+                  ? 'var(--font-vt323)'
+                  : timerFont === 'Share Tech Mono'
+                    ? 'var(--font-share-tech-mono)'
+                    : timerFont === 'Orbitron'
+                      ? 'var(--font-orbitron)'
+                      : timerFont === 'Rubik Mono One'
+                        ? 'var(--font-rubik-mono-one)'
+                        : 'var(--font-fira-code)',
+          }}
           aria-label={`Timer showing ${minutes} minutes and ${seconds} seconds`}
         >
           {formatTime(timeLeft)}
