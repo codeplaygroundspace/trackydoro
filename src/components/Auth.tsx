@@ -3,6 +3,7 @@
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
+import { useCloudSync } from '@/hooks/useCloudSync';
 import { auth } from '@/lib/firebase';
 
 import { MagicLinkSignIn } from './MagicLinkSignIn';
@@ -10,6 +11,9 @@ import { MagicLinkSignIn } from './MagicLinkSignIn';
 export function Auth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize cloud sync
+  const { isAuthenticated, isCloudSynced } = useCloudSync();
 
   // Listen to authentication state changes
   useEffect(() => {
@@ -38,6 +42,7 @@ export function Auth() {
     return (
       <div className="flex items-center gap-4">
         <span className="text-sm font-medium text-muted-foreground">Hi, {user.email}</span>
+        {isCloudSynced && <span className="text-xs text-green-500">✨ Synced</span>}
         <button
           onClick={handleSignOut}
           className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
