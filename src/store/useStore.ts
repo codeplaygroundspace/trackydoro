@@ -18,7 +18,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { auth } from '@/lib/firebase';
 import { type CategoryColorKey, COLOR_MIGRATION_MAP } from '@/lib/theme-colors';
+import {
+  loadUserProjectsFromCloud,
+  markLocalDataTimestamp,
+  mergeLocalWithCloud,
+  saveUserProjectsToCloud,
+} from '@/lib/userSync';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import type { Category, CategoryData } from '@/types';
 
@@ -29,6 +36,7 @@ interface PomodoroStore {
   selectedCategory: string;
   pomodoroCount: number;
   isLoading: boolean;
+  isCloudSynced: boolean;
 
   // Actions
   addCategory: (name: string, colorKey: CategoryColorKey, target: number) => void;
@@ -38,6 +46,10 @@ interface PomodoroStore {
   recordPomodoro: (categoryId: string) => void;
   incrementPomodoroCount: () => void;
   setLoading: (loading: boolean) => void;
+
+  // Cloud sync actions
+  syncToCloud: () => Promise<void>;
+  loadFromCloud: (userId: string) => Promise<void>;
 }
 
 const DEFAULT_CATEGORIES: Category[] = [
@@ -49,13 +61,62 @@ const DEFAULT_CATEGORIES: Category[] = [
 
 export const useStore = create<PomodoroStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       // Initial state
       categories: DEFAULT_CATEGORIES,
       categoryData: [],
       selectedCategory: '',
       pomodoroCount: 0,
       isLoading: false,
+      isCloudSynced: false,
+
+      // Cloud sync actions
+      syncToCloud: async () => {
+        const user = auth.currentUser;
+        if (!user) {
+          console.log('No authenticated user, skipping cloud sync');
+          return;
+        }
+
+        try {
+          const state = get();
+          await saveUserProjectsToCloud(user.uid, {
+            categories: state.categories,
+            categoryData: state.categoryData,
+            selectedCategory: state.selectedCategory,
+            pomodoroCount: state.pomodoroCount,
+          });
+          set({ isCloudSynced: true });
+          markLocalDataTimestamp();
+        } catch (error) {
+          console.error('Cloud sync failed:', error);
+          set({ isCloudSynced: false });
+        }
+      },
+
+      loadFromCloud: async (userId: string) => {
+        try {
+          const cloudData = await loadUserProjectsFromCloud(userId);
+          if (!cloudData) return;
+
+          const state = get();
+          const localData = {
+            categories: state.categories,
+            categoryData: state.categoryData,
+          };
+
+          const mergedData = mergeLocalWithCloud(localData, cloudData);
+          set({
+            categories: mergedData.categories,
+            categoryData: mergedData.categoryData,
+            isCloudSynced: true,
+          });
+          markLocalDataTimestamp();
+        } catch (error) {
+          console.error('Cloud load failed:', error);
+          set({ isCloudSynced: false });
+        }
+      },
 
       // Actions
       addCategory: (name, colorKey, target) => {
@@ -70,6 +131,9 @@ export const useStore = create<PomodoroStore>()(
           categories: [...state.categories, newCategory],
           selectedCategory: state.categories.length === 0 ? newCategory.id : state.selectedCategory,
         }));
+
+        // Auto-sync to cloud after critical changes
+        get().syncToCloud();
       },
 
       updateCategory: (id, name, colorKey, target) => {
@@ -78,6 +142,9 @@ export const useStore = create<PomodoroStore>()(
             cat.id === id ? { ...cat, name, colorKey, target } : cat,
           ),
         }));
+
+        // Auto-sync to cloud after critical changes
+        get().syncToCloud();
       },
 
       deleteCategory: (id) => {
@@ -96,6 +163,9 @@ export const useStore = create<PomodoroStore>()(
             selectedCategory: newSelectedCategory,
           };
         });
+
+        // Auto-sync to cloud after critical changes
+        get().syncToCloud();
       },
 
       setSelectedCategory: (id) => set({ selectedCategory: id }),
@@ -129,6 +199,9 @@ export const useStore = create<PomodoroStore>()(
 
           return { categoryData: updatedData };
         });
+
+        // Background sync analytics (non-critical, will batch sync)
+        setTimeout(() => get().syncToCloud(), 5000);
       },
 
       incrementPomodoroCount: () => {
