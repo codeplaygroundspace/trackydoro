@@ -1,6 +1,27 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Allow: /analytics
+Allow: /about
+Allow: /privacy
+Allow: /terms
 
-# Sitemap
-Sitemap: https://trackydoro.com/sitemap.xml
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Allow index for Chrome Lighthouse checks
+User-agent: GoogleChrome
+Allow: /
+
+# Allow Google special content types
+User-agent: Googlebot
+Allow: /
+Allow: /analytics
+Allow: /about
+
+# Block admin or maintenance areas (if any get added)
+# Disallow: /admin
+# Disallow: /private
+
+# Sitemaps
+Sitemap: https://trackydoro.vercel.app/sitemap.xml
