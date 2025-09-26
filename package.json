@@ -7,13 +7,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next build",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "bun run format:check && bun run lint",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
