@@ -1,8 +1,19 @@
 'use client';
 
+import { EditIcon, TrashIcon } from '@/components/icons';
+import {
+  getCategoryBackgroundColor,
+  getCategoryData,
+  getDayData,
+  getSquareColor,
+  getTodayProgress,
+  getTodayString,
+  WEEKDAY_HEADERS,
+} from '@/lib/category-utils';
+import { formatTarget, getCalendarGrid } from '@/lib/date-utils';
 import { Category, CategoryData } from '@/types';
 
-import { CategoryRow } from './CategoryRow';
+import { CategorySquare } from './CategorySquare';
 
 interface CategoryGridProps {
   categories: Category[];
@@ -21,10 +32,8 @@ export function CategoryGrid({
   onDelete,
   editForm,
 }: CategoryGridProps) {
-  const getCategoryData = (categoryId: string) => {
-    const data = categoryData.find((c) => c.categoryId === categoryId);
-    return data?.days || [];
-  };
+  const calendarWeeks = getCalendarGrid();
+  const today = getTodayString();
 
   if (categories.length === 0) {
     return (
@@ -37,17 +46,101 @@ export function CategoryGrid({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {categories.map((category) => (
-        <CategoryRow
+        <div
           key={category.id}
-          category={category}
-          categoryData={getCategoryData(category.id)}
-          onEdit={() => onEdit(category.id)}
-          onDelete={onDelete}
-          isEditing={editingCategory === category.id}
-          editForm={editingCategory === category.id ? editForm(category) : undefined}
-        />
+          className="bg-card backdrop-blur rounded-xl p-4 hover:bg-card transition-all duration-200"
+        >
+          {/* Category Header */}
+          <div className="flex items-center justify-between mb-4">
+            {editingCategory === category.id ? (
+              editForm(category)
+            ) : (
+              <>
+                <h2 className="text-lg font-bold flex items-center gap-2">
+                  <span
+                    className="w-3 h-3 rounded"
+                    style={{ backgroundColor: getCategoryBackgroundColor(category) }}
+                  />
+                  {category.name}
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onEdit(category.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onEdit(category.id);
+                      }
+                    }}
+                    className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
+                    aria-label={`Edit ${category.name} project`}
+                    tabIndex={0}
+                  >
+                    <EditIcon className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(category)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onDelete(category);
+                      }
+                    }}
+                    className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring rounded"
+                    aria-label={`Delete ${category.name} project`}
+                    tabIndex={0}
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="space-y-1">
+            {/* Weekday Headers */}
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {WEEKDAY_HEADERS.map((day, index) => (
+                <div
+                  key={index}
+                  className="text-center text-[8px] text-muted-foreground/60 font-medium py-1"
+                >
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            {/* Calendar Weeks */}
+            {calendarWeeks.map((week, weekIndex) => (
+              <div key={weekIndex} className="grid grid-cols-7 gap-1">
+                {week.map((date, dayIndex) => (
+                  <div key={dayIndex} className="flex justify-center">
+                    {date ? (
+                      <CategorySquare
+                        date={date}
+                        minutes={getDayData(categoryData, category.id, date).minutes}
+                        pomodoros={getDayData(categoryData, category.id, date).pomodoros}
+                        color={getSquareColor(categoryData, category, date)}
+                        isToday={date === today}
+                      />
+                    ) : (
+                      <div className="w-8 h-8" /> // Empty cell for padding
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Category Stats */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground mt-3 pt-3 border-t border-border/20">
+            <span>Target: {formatTarget(category.target)}/day</span>
+            <span>{getTodayProgress(categoryData, category, today)}% of target today</span>
+          </div>
+        </div>
       ))}
     </div>
   );
