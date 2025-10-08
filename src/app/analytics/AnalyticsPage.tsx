@@ -16,6 +16,7 @@ import { ConfirmDialog, Modal } from '@/components/ui';
 import { CategoryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAppLoading } from '@/hooks';
 import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { getCurrentMonthYear } from '@/lib/date-utils';
 import { useStore } from '@/store/useStore';
 import { Category } from '@/types';
 
@@ -260,6 +261,7 @@ export default function AnalyticsPage() {
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
               <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
+              <p className="text-sm text-muted-foreground mt-1">{getCurrentMonthYear()}</p>
             </div>
 
             {!isLoading ? (
