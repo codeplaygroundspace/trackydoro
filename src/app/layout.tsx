@@ -11,6 +11,8 @@ import {
   VT323,
 } from 'next/font/google';
 
+import { CloudSyncProvider } from '@/components/CloudSyncProvider';
+
 const openSans = Open_Sans({
   subsets: ['latin'],
   variable: '--font-open-sans',
@@ -221,7 +223,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${openSans.className} antialiased`}>{children}</body>
+      <body className={`${openSans.className} antialiased`}>
+        <CloudSyncProvider>{children}</CloudSyncProvider>
+      </body>
     </html>
   );
 }
