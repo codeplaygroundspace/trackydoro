@@ -1,6 +1,8 @@
 'use client';
 
-import { EditIcon, TrashIcon } from '@/components/icons';
+import { Reorder } from 'framer-motion';
+
+import { DragIcon, EditIcon, TrashIcon } from '@/components/icons';
 import {
   getCategoryBackgroundColor,
   getCategoryData,
@@ -21,6 +23,7 @@ interface CategoryGridProps {
   editingCategory: string | null;
   onEdit: (categoryId: string) => void;
   onDelete: (category: Category) => void;
+  onReorder: (newOrder: Category[]) => void;
   editForm: (category: Category) => React.ReactNode;
 }
 
@@ -30,6 +33,7 @@ export function CategoryGrid({
   editingCategory,
   onEdit,
   onDelete,
+  onReorder,
   editForm,
 }: CategoryGridProps) {
   const calendarWeeks = getCalendarGrid();
@@ -46,11 +50,17 @@ export function CategoryGrid({
   }
 
   return (
-    <div className="space-y-6">
+    <Reorder.Group axis="y" values={categories} onReorder={onReorder} className="space-y-6">
       {categories.map((category) => (
-        <div
+        <Reorder.Item
           key={category.id}
-          className="bg-card backdrop-blur rounded-xl p-4 hover:bg-card transition-all duration-200"
+          value={category}
+          className="bg-card backdrop-blur rounded-xl p-4 hover:bg-card transition-all duration-200 cursor-grab active:cursor-grabbing"
+          whileDrag={{
+            scale: 1.02,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+            zIndex: 1000,
+          }}
         >
           {/* Category Header */}
           <div className="flex items-center justify-between mb-4">
@@ -66,6 +76,13 @@ export function CategoryGrid({
                   {category.name}
                 </h2>
                 <div className="flex gap-2">
+                  <button
+                    className="text-muted-foreground hover:text-foreground transition-colors cursor-grab active:cursor-grabbing focus:outline-none focus:ring-2 focus:ring-ring rounded p-1"
+                    aria-label={`Drag to reorder ${category.name} project`}
+                    tabIndex={0}
+                  >
+                    <DragIcon className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={() => onEdit(category.id)}
                     onKeyDown={(e) => {
@@ -140,8 +157,8 @@ export function CategoryGrid({
             <span>Target: {formatTarget(category.target)}/day</span>
             <span>{getTodayProgress(categoryData, category, today)}% of target today</span>
           </div>
-        </div>
+        </Reorder.Item>
       ))}
-    </div>
+    </Reorder.Group>
   );
 }

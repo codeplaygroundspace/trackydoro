@@ -42,6 +42,7 @@ interface PomodoroStore {
   addCategory: (name: string, colorKey: CategoryColorKey, target: number) => void;
   updateCategory: (id: string, name: string, colorKey: CategoryColorKey, target: number) => void;
   deleteCategory: (id: string) => void;
+  reorderCategories: (newOrder: Category[]) => void;
   setSelectedCategory: (id: string) => void;
   recordPomodoro: (categoryId: string) => void;
   incrementPomodoroCount: () => void;
@@ -166,6 +167,13 @@ export const useStore = create<PomodoroStore>()(
 
         // Auto-sync to cloud after critical changes
         get().syncToCloud();
+      },
+
+      reorderCategories: (newOrder) => {
+        set({ categories: newOrder });
+
+        // Debounced cloud sync after reordering
+        setTimeout(() => get().syncToCloud(), 1000);
       },
 
       setSelectedCategory: (id) => set({ selectedCategory: id }),
