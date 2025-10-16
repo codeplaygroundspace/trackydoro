@@ -14,10 +14,13 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 - 🍅 **Pomodoro Timer**: Stay focused with 25-minute work sessions and break intervals
 - 📊 **Visual Progress Tracking**: GitHub-style activity squares show your daily progress
 - 🔄 **Session Persistence**: Resume your timer exactly where you left off, even after closing the browser
-- 🎯 **Category management**
-- 📱 **Responsive Design**
+- 🎯 **Project Management**: Create, edit, and organize your projects with custom colors
+- 🔀 **Drag & Drop Reordering**: Easily reorder projects with smooth animations (mobile & desktop)
+- 📈 **Analytics Dashboard**: Detailed insights into your productivity patterns and focus time
+- 📱 **Responsive Design**: Optimized for both mobile and desktop experiences
 - 🌓 **Theme System**: Beautiful light and dark themes with smooth transitions
 - 🎨 **Custom Colors**: Personalise categories with your preferred colors
+- ☁️ **Cloud Sync**: Seamlessly sync your data across devices with Firebase authentication
 
 ### Timer Features
 
@@ -27,6 +30,15 @@ A beautiful and modern Pomodoro timer combined with visual habit tracking. Track
 - 🔊 Audio notifications for session completion
 - ⏸️ Pause/Resume functionality
 - 🔄 Session state persistence across page reloads
+
+### Analytics Features
+
+- 📊 **Daily Progress Tracking**: Visual calendar grid showing your daily activity
+- 📈 **Weekly Charts**: Track your focus time trends over the past 7 days
+- 🎯 **Project Distribution**: See how you spend time across different projects
+- ⏰ **Peak Productivity Times**: Identify your most productive hours of the day
+- 🔥 **Streak Tracking**: Monitor consecutive days of productivity
+- 📋 **Project Management**: Drag and drop to reorder projects by priority
 
 ## 📝 Available Scripts
 
@@ -46,8 +58,11 @@ bun run format:check # Check code formatting
 - **[React 19](https://react.dev/)** - Latest React with improved performance
 - **[TypeScript 5](https://www.typescriptlang.org/)** - Type-safe development
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Modern utility-first CSS
+- **[Framer Motion](https://www.framer.com/motion/)** - Production-ready motion library for React
+- **[Firebase](https://firebase.google.com/)** - Backend-as-a-Service for authentication and cloud storage
 - **[date-fns](https://date-fns.org/)** - Modern JavaScript date utility library
 - **[Zustand](https://zustand-demo.pmnd.rs/)** - A small, fast and scalable bearbones state-management solution
+- **[Recharts](https://recharts.org/)** - Composable charting library for React
 
 ### Manual Deployment
 
@@ -65,16 +80,44 @@ bun run start
 
 ### Environment Variables
 
-No environment variables are required for basic functionality. All data is stored locally in the browser.
+For basic functionality, no environment variables are required. However, for cloud sync features, you'll need to configure Firebase:
+
+```bash
+# Firebase Configuration (optional - for cloud sync)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+Without Firebase configuration, all data is stored locally in the browser.
 
 ## 💾 Data Storage
 
-Trackydoro uses browser localStorage to persist:
+Trackydoro offers flexible data storage options:
+
+### Local Storage (Default)
 
 - Timer state and current session
-- Categories and their settings
+- Projects and their settings
 - Daily progress and statistics
 - Theme preference
+- Project order and customizations
+
+### Cloud Storage (Optional)
+
+When Firebase is configured, data is automatically synced across devices:
+
+- **Smart Merging**: Intelligently combines local and cloud data
+- **Conflict Resolution**: Timestamp-based resolution for data conflicts
+- **Cross-Device Sync**: Access your data from any device
+- **Automatic Backup**: Your progress is safely stored in the cloud
+
+### Data Migration
+
+The app seamlessly handles data migration between local and cloud storage, ensuring no progress is lost when switching between devices or enabling cloud sync.
 
 ## 🤝 Contributing
 

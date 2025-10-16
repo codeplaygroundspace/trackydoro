@@ -3,6 +3,7 @@ export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
 export { Clock3 } from './Clock3';
 export { CollapseIcon } from './CollapseIcon';
+export { DragIcon } from './DragIcon';
 export { EditIcon } from './EditIcon';
 export { GearIcon } from './GearIcon';
 export { MoonIcon } from './MoonIcon';

@@ -29,6 +29,7 @@ export default function AnalyticsPage() {
   const addCategory = useStore((state) => state.addCategory);
   const updateCategory = useStore((state) => state.updateCategory);
   const deleteCategory = useStore((state) => state.deleteCategory);
+  const reorderCategories = useStore((state) => state.reorderCategories);
   const recordPomodoro = useStore((state) => state.recordPomodoro);
 
   // Use consolidated loading hook
@@ -288,6 +289,7 @@ export default function AnalyticsPage() {
                       editingCategory={editingCategory}
                       onEdit={setEditingCategory}
                       onDelete={setDeletingCategory}
+                      onReorder={reorderCategories}
                       editForm={(category: Category) => (
                         <CategoryForm
                           initialValues={category}
