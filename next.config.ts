@@ -1,11 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Enable experimental features for better SEO
-  experimental: {
-    optimizePackageImports: ['recharts', 'zustand'],
-  },
-
   // Optimize images for better Core Web Vitals
   images: {
     formats: ['image/webp', 'image/avif'],
